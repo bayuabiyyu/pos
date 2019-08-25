@@ -20,4 +20,8 @@ class Kategori extends Model
         'kode_kategori', 'nama_kategori',
     ];
 
+    public function barang(){
+        return $this->belongsTo('App\Model\Barang', 'kode_kategori');
+    }
+
 }

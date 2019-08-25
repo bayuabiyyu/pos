@@ -21,4 +21,12 @@ class Barang extends Model
         'keterangan', 'foto',
     ];
 
+    public function kategori(){
+        return $this->hasOne('App\Model\Kategori', 'kode_kategori');
+    }
+
+    public function satuan(){
+        return $this->hasOne('App\Model\Satuan', 'kode_satuan');
+    }
+
 }

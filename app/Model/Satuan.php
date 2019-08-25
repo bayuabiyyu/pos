@@ -18,4 +18,9 @@ class Satuan extends Model
     protected $fillable = [
         'kode_satuan', 'nama_satuan'
     ];
+
+    public function barang(){
+        return $this->belongsTo('App\Model\Barang', 'kode_satuan');
+    }
+
 }

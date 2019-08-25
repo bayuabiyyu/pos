@@ -12,5 +12,46 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('admin.auth.login');
+});
+
+
+Route::group(['prefix' => 'admin'], function () {
+
+    Route::get('logout', 'Auth\LoginController@logout')->name('logout');
+    // Route::post('login', 'Auth\LoginController@login')->name('login');
+    Auth::routes();
+
+    Route::group(['middleware' => ['auth']], function () {
+
+    Route::get('home', 'Admin\HomeController@index')->name('home');
+
+    // MASTER DATA ROUTE
+    Route::group(['prefix' => 'master'], function () {
+
+        // BARANG
+        Route::resource('barang', 'Admin\BarangController');
+        Route::post('barang/datatable', 'Admin\BarangController@dataTable')->name('barang.datatables');
+        // END BARANG
+
+        // KATEGORI
+        Route::resource('kategori', 'Admin\KategoriController');
+        Route::post('kategori/datatable', 'Admin\KategoriController@dataTable')->name('kategori.datatables');
+        // END KATEGORI
+
+        // SATUAN
+        Route::resource('satuan', 'Admin\SatuanController');
+        Route::post('satuan/datatable', 'Admin\SatuanController@dataTable')->name('satuan.datatables');
+        // END SATUAN
+
+        // SUPPLIER
+        Route::resource('supplier', 'Admin\SupplierController');
+        Route::post('supplier/datatable', 'Admin\SupplierController@dataTable')->name('supplier.datatables');
+        // END SUPPLIER
+
+    });
+    // END MASTER DATA ROUTE
+
+    });
+
 });
