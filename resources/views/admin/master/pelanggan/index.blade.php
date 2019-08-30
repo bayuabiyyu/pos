@@ -2,7 +2,7 @@
 @extends('admin.layout.app')
 
 @section('title')
-    Barang
+    Pelanggan
 @endsection
 
 @push('css')
@@ -10,22 +10,17 @@
 @endpush
 
 @section('content')
-<style>
-    th, td {
-        white-space: nowrap;
-    }
-</style>
    <!-- Content Wrapper. Contains page content -->
    <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
           <h1>
             MASTER
-            <small>Data Barang</small>
+            <small>Data Pelanggan</small>
           </h1>
           <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-file"></i> Master</a></li>
-            <li><a href="#">Data Barang</a></li>
+            <li><a href="#">Data Pelanggan</a></li>
           </ol>
         </section>
 
@@ -45,14 +40,10 @@
                             <thead>
                             <tr>
                             <th>No.</th>
-                            <th>Kode Barang</th>
-                            <th>Nama Barang</th>
-                            <th>Stok</th>
-                            <th>Stok Min</th>
-                            <th>Satuan</th>
-                            <th>Kategori</th>
-                            <th>Foto</th>
-                            <th>Keterangan</th>
+                            <th>Kode Pelanggan</th>
+                            <th>Nama Pelanggan</th>
+                            <th>No. Telp</th>
+                            <th>Alamat</th>
                             <th>Action</th>
                             </tr>
                             </thead>
@@ -120,23 +111,18 @@ $.ajaxSetup({
         processing: true,
         serverSide: true,
         ajax: {
-            url: "{{ route('barang.datatables') }}",
+            url: "{{ route('pelanggan.datatables') }}",
             type: "POST"
         },
         columns: [
             {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-            {data: 'kode_barang', name: 'kode_barang'},
-            {data: 'nama_barang', name: 'nama_barang'},
-            {data: 'stok', name: 'stok'},
-            {data: 'stok_min', name: 'stok_min'},
-            {data: 'nama_satuan', name: 'nama_satuan'},
-            {data: 'nama_kategori', name: 'nama_kategori'},
-            {data: 'image', name: 'image'},
-            {data: 'keterangan', name: 'keterangan'},
+            {data: 'kode_pelanggan', name: 'kode_pelanggan'},
+            {data: 'nama_pelanggan', name: 'nama_pelanggan'},
+            {data: 'no_telp', name: 'no_telp'},
+            {data: 'alamat', name: 'alamat'},
             {data: 'action', name: 'action', orderable: false, searchable: false},
         ]
     });
-
 
 
 })
@@ -145,7 +131,7 @@ $.ajaxSetup({
     $('#btn_tambah').on('click', function(e){
         e.preventDefault();
         $('#modal .modal-title').html('TAMBAH DATA');
-        var url = "{{ route('barang.create') }}",
+        var url = "{{ route('pelanggan.create') }}",
             method = "GET",
             dataType = "HTML";
 
@@ -168,7 +154,7 @@ $.ajaxSetup({
             url         = me.attr('action'),
             method      = me.attr('method'),
             dataType    = "JSON",
-            data        = new FormData(this);
+            data        = me.serialize();
 
         var result = confirm("Apakah anda yakin ingin submit data tersebut?");
 
@@ -179,11 +165,8 @@ $.ajaxSetup({
                 type: method,
                 dataType: dataType,
                 data: data,
-                contentType: false,
-                cache: false,
-                processData: false,
                 beforeSend: function(res){
-                    alert('before send');
+
                 },
                 success: function(res){
                     alert(res.msg);
@@ -286,23 +269,6 @@ $.ajaxSetup({
         });
 
     });
-
-// FOTO CHANGE LOAD IMAGE
-    $('#modal').on('change', '#foto', function(e){
-        readURL(this);
-    });
-
-    function readURL(input){
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-
-            reader.onload = function (e) {
-                $('#modal #foto_viewer').attr('src', e.target.result);
-            }
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-// FOTO CHANGE LOAD IMAGE
 
     </script>
 

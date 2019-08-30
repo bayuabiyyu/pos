@@ -2,7 +2,7 @@
 @extends('admin.layout.app')
 
 @section('title')
-    Barang
+    Data Penjualan
 @endsection
 
 @push('css')
@@ -15,64 +15,64 @@
         white-space: nowrap;
     }
 </style>
-   <!-- Content Wrapper. Contains page content -->
-   <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-          <h1>
-            MASTER
-            <small>Data Barang</small>
-          </h1>
-          <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-file"></i> Master</a></li>
-            <li><a href="#">Data Barang</a></li>
-          </ol>
-        </section>
+    <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+            <h1>
+                PENJUALAN
+                <small>Data Penjualan</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-file"></i> Penjualan</a></li>
+                <li><a href="#">Data Penjualan</a></li>
+            </ol>
+            </section>
 
-        <!-- Main content -->
-        <section class="content">
-          <div class="row">
-            <div class="col-xs-12">
+            <!-- Main content -->
+            <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
 
-              <div class="box">
-                <div class="box-header">
-                  <h3 class="box-title"> <button id="btn_tambah" class="btn bg-blue btn-flat"> <i class="fa fa-plus"></i> Tambah Data </button> </h3>
-                </div>
-                <!-- /.box-header -->
-                <div class="box-body">
-                    <div class="table-responsive">
-                        <table id="data" class="table table-bordered table-striped table-hover">
-                            <thead>
-                            <tr>
-                            <th>No.</th>
-                            <th>Kode Barang</th>
-                            <th>Nama Barang</th>
-                            <th>Stok</th>
-                            <th>Stok Min</th>
-                            <th>Satuan</th>
-                            <th>Kategori</th>
-                            <th>Foto</th>
-                            <th>Keterangan</th>
-                            <th>Action</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-
-                            </tbody>
-                        </table>
+                <div class="box">
+                    <div class="box-header">
+                    <h3 class="box-title"> <button id="btn_tambah" class="btn bg-blue btn-flat"> <i class="fa fa-plus"></i> Tambah Data </button> </h3>
                     </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <div class="table-responsive">
+                            <table id="data" class="table table-bordered table-striped table-hover">
+                                <thead>
+                                <tr>
+                                <th>No.</th>
+                                <th>Kode Transaksi</th>
+                                <th>Tgl Transaksi</th>
+                                <th>Karyawan</th>
+                                <th>Pelanggan</th>
+                                <th>Total Harga</th>
+                                <th>Total Diskon</th>
+                                <th>DLL</th>
+                                <th>Bayar</th>
+                                <th>Kembali</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
                 </div>
-                <!-- /.box-body -->
-              </div>
-              <!-- /.box -->
+                <!-- /.box -->
+                </div>
+                <!-- /.col -->
             </div>
-            <!-- /.col -->
-          </div>
-          <!-- /.row -->
-        </section>
-        <!-- /.content -->
-      </div>
-      <!-- /.content-wrapper -->
+            <!-- /.row -->
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
 
 {{-- MODAL --}}
 
@@ -105,6 +105,10 @@
 
 
 @push('javascript')
+    <!-- DataTables -->
+    <script src="{{ asset('assets/admin') }}/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="{{ asset('assets/admin') }}/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+
     <script>
 
 $(document).ready(function(){
@@ -116,36 +120,27 @@ $.ajaxSetup({
     }
 });
 
-    var table = $('#data').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: {
-            url: "{{ route('barang.datatables') }}",
-            type: "POST"
-        },
-        columns: [
-            {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-            {data: 'kode_barang', name: 'kode_barang'},
-            {data: 'nama_barang', name: 'nama_barang'},
-            {data: 'stok', name: 'stok'},
-            {data: 'stok_min', name: 'stok_min'},
-            {data: 'nama_satuan', name: 'nama_satuan'},
-            {data: 'nama_kategori', name: 'nama_kategori'},
-            {data: 'image', name: 'image'},
-            {data: 'keterangan', name: 'keterangan'},
-            {data: 'action', name: 'action', orderable: false, searchable: false},
-        ]
-    });
-
-
+    // var table = $('#data').DataTable({
+    //     processing: true,
+    //     serverSide: true,
+    //     ajax: {
+    //         url: "{{ route('satuan.datatables') }}",
+    //         type: "POST"
+    //     },
+    //     columns: [
+    //         {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+    //         {data: 'kode_satuan', name: 'kode_satuan'},
+    //         {data: 'nama_satuan', name: 'nama_satuan'},
+    //         {data: 'action', name: 'action', orderable: false, searchable: false},
+    //     ]
+    // });
 
 })
-
 
     $('#btn_tambah').on('click', function(e){
         e.preventDefault();
         $('#modal .modal-title').html('TAMBAH DATA');
-        var url = "{{ route('barang.create') }}",
+        var url = "{{ route('satuan.create') }}",
             method = "GET",
             dataType = "HTML";
 
@@ -168,7 +163,7 @@ $.ajaxSetup({
             url         = me.attr('action'),
             method      = me.attr('method'),
             dataType    = "JSON",
-            data        = new FormData(this);
+            data        = me.serialize();
 
         var result = confirm("Apakah anda yakin ingin submit data tersebut?");
 
@@ -179,11 +174,8 @@ $.ajaxSetup({
                 type: method,
                 dataType: dataType,
                 data: data,
-                contentType: false,
-                cache: false,
-                processData: false,
                 beforeSend: function(res){
-                    alert('before send');
+
                 },
                 success: function(res){
                     alert(res.msg);
@@ -286,23 +278,6 @@ $.ajaxSetup({
         });
 
     });
-
-// FOTO CHANGE LOAD IMAGE
-    $('#modal').on('change', '#foto', function(e){
-        readURL(this);
-    });
-
-    function readURL(input){
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-
-            reader.onload = function (e) {
-                $('#modal #foto_viewer').attr('src', e.target.result);
-            }
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-// FOTO CHANGE LOAD IMAGE
 
     </script>
 

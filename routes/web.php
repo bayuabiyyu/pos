@@ -32,6 +32,10 @@ Route::group(['prefix' => 'admin'], function () {
         // BARANG
         Route::resource('barang', 'Admin\BarangController');
         Route::post('barang/datatable', 'Admin\BarangController@dataTable')->name('barang.datatables');
+        // Route::post('barang/{id}', [
+        //     'as' => 'barang.update',
+        //     'uses' => 'Admin\BarangController@update'
+        // ]);
         // END BARANG
 
         // KATEGORI
@@ -49,8 +53,23 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('supplier/datatable', 'Admin\SupplierController@dataTable')->name('supplier.datatables');
         // END SUPPLIER
 
+        // SUPPLIER
+        Route::resource('pelanggan', 'Admin\PelangganController');
+        Route::post('pelanggan/datatable', 'Admin\PelangganController@dataTable')->name('pelanggan.datatables');
+        // END SUPPLIER
+
     });
     // END MASTER DATA ROUTE
+
+    // PENJUALAN ROUTE
+    Route::group(['prefix' => 'transaksi'], function () {
+
+        // PENJUALAN
+        Route::resource('penjualan', 'Admin\PenjualanController');
+        // PENJUALAN
+
+    });
+    // END PENJUALAN ROUTE
 
     });
 
