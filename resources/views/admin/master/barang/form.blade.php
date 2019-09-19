@@ -59,12 +59,12 @@
 
     <div class="form-group">
         <label for="harga_beli">Harga Beli</label>
-        <input type="number" class="form-control" id="harga_beli" name="harga_beli" placeholder="Masukkan Harga Beli" maxlength="100" value="{{ $data['barang']->exists ? $data['barang']->harga_beli : '' }}" >
+        <input type="number" class="form-control" id="harga_beli" name="harga_beli" placeholder="Masukkan Harga Beli" maxlength="10000000" value="{{ $data['barang']->exists ? $data['barang']->harga_beli : '' }}" >
     </div>
 
     <div class="form-group">
         <label for="harga_jual">Harga Jual</label>
-        <input type="number" class="form-control" id="harga_jual" name="harga_jual" placeholder="Masukkan Harga Jual" maxlength="100" value="{{ $data['barang']->exists ? $data['barang']->harga_jual : '' }}" >
+        <input type="number" class="form-control" id="harga_jual" name="harga_jual" placeholder="Masukkan Harga Jual" maxlength="10000000" value="{{ $data['barang']->exists ? $data['barang']->harga_jual : '' }}" >
     </div>
 
     <div class="form-group">

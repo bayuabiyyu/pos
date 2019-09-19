@@ -51,6 +51,8 @@
                             <th>Stok Min</th>
                             <th>Satuan</th>
                             <th>Kategori</th>
+                            <th>Harga Beli</th>
+                            <th>Harga Jual</th>
                             <th>Foto</th>
                             <th>Keterangan</th>
                             <th>Action</th>
@@ -131,6 +133,8 @@ $.ajaxSetup({
             {data: 'stok_min', name: 'stok_min'},
             {data: 'nama_satuan', name: 'nama_satuan'},
             {data: 'nama_kategori', name: 'nama_kategori'},
+            {data: 'harga_beli', name: 'harga_beli'},
+            {data: 'harga_jual', name: 'harga_jual'},
             {data: 'image', name: 'image'},
             {data: 'keterangan', name: 'keterangan'},
             {data: 'action', name: 'action', orderable: false, searchable: false},

@@ -66,6 +66,7 @@ Route::group(['prefix' => 'admin'], function () {
 
         // PENJUALAN
         Route::resource('penjualan', 'Admin\PenjualanController');
+        Route::post('penjualan/data_barang', 'Admin\PenjualanController@dataBarang')->name('penjualan.data_barang');
         // PENJUALAN
 
     });

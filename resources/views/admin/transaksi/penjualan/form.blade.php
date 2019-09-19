@@ -1,8 +1,7 @@
-
 @extends('admin.layout.app')
 
 @section('title')
-    Create Penjualan
+    Transaksi Penjualan
 @endsection
 
 @push('css')
@@ -10,160 +9,230 @@
 @endpush
 
 @section('content')
-   <!-- Content Wrapper. Contains page content -->
-   <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-          <h1>
-            Create Penjualan
-            <small>#007612</small>
-          </h1>
-          <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i> Transaksi</a></li>
-            <li><a href="#">Penjualan</a></li>
-            <li class="active">Create Penjualan</li>
-          </ol>
-        </section>
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+       INVOICE
+        <small>Transaksi Penjualan</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Transaksi</a></li>
+        <li><a href="#">Penjualan</a></li>
+        <li class="active">Transaksi Penjualan</li>
+      </ol>
+    </section>
 
-        <div class="pad margin no-print">
-          <div class="callout callout-info" style="margin-bottom: 0!important;">
-            <h4><i class="fa fa-info"></i> Note:</h4>
-            This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <!-- left column -->
+        <div class="col-md-6">
+          <!-- general form elements -->
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Data Transaksi</h3>
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+            <form class="form-horizontal">
+                    <div class="box-body">
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-3 control-label">Kode Transaksi </label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" id="" name="" placeholder="Tanggal" value="1" readonly>
+                        </div>
+                        <div class="col-sm-3">
+                            <input type="checkbox" name="" id=""> Kode Otomatis
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-3 control-label">Tanggal</label>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" id="tanggal" name="tanggal" placeholder="Tanggal">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-3 control-label">Pelanggan</label>
+                        <div class="col-sm-5">
+                            <select class="form-control" name="pelanggan" id="pelanggan">
+                                @foreach ($data['pelanggan'] as $item)
+                                    <option value="{{ $item->kode_pelanggan }}">{{ $item->nama_pelanggan }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                            <label for="" class="col-sm-3 control-label">Pembayaran</label>
+                            <div class="col-sm-5">
+                                <select class="form-control" name="pembayaran" id="pembayaran">
+                                    <option value="transfer">Transfer</option>
+                                    <option value="cash">Cash</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <!-- /.box-body -->
+                    <div class="box-footer">
+                      {{-- <p>* Harap isi data transaksi dengan benar</p> --}}
+                      <div class="text-left">
+                        <button type="button" class="btn btn-primary"> <span class="fa fa-plus"></span> TRANSAKSI BARU (F5)</button>
+                      </div>
+                    </div>
+                    <!-- /.box-footer -->
+                  </form>
           </div>
+          <!-- /.box -->
         </div>
+        <!--/.col (left) -->
 
-        <!-- Main content -->
-        <section class="invoice">
-          <!-- title row -->
-          <div class="row">
-            <div class="col-xs-12">
-              <h2 class="page-header">
-                <i class="fa fa-globe"></i> AdminLTE, Inc.
-                <small class="pull-right">Date: 2/10/2014</small>
-              </h2>
+        <!-- right column -->
+        <div class="col-md-6">
+          <!-- Horizontal Form -->
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Pembayaran</h3>
             </div>
-            <!-- /.col -->
-          </div>
-          <!-- info row -->
-          <div class="row invoice-info">
-            <div class="col-sm-4 invoice-col">
-              <input type="text" placeholder="Kode Barang">
-            </div>
-            <!-- /.col -->
-            <div class="col-sm-4 invoice-col">
-              To
-            </div>
-            <!-- /.col -->
-            <div class="col-sm-4 invoice-col">
-              <b>Invoice #007612</b><br>
-              <br>
-              <b>Order ID:</b> 4F3S8J<br>
-              <b>Payment Due:</b> 2/22/2014<br>
-              <b>Account:</b> 968-34567
-            </div>
-            <!-- /.col -->
-          </div>
-          <!-- /.row -->
+            <!-- /.box-header -->
+            <!-- form start -->
+            <form class="form-horizontal">
+              <div class="box-body">
 
-          <!-- Table row -->
-          <div class="row">
-            <div class="col-xs-12 table-responsive">
-              <table class="table table-striped">
-                <thead>
-                <tr>
-                  <th>Qty</th>
-                  <th>Product</th>
-                  <th>Serial #</th>
-                  <th>Description</th>
-                  <th>Subtotal</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>Call of Duty</td>
-                  <td>455-981-221</td>
-                  <td>El snort testosterone trophy driving gloves handsome</td>
-                  <td>$64.50</td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>Need for Speed IV</td>
-                  <td>247-925-726</td>
-                  <td>Wes Anderson umami biodiesel</td>
-                  <td>$50.00</td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>Monsters DVD</td>
-                  <td>735-845-642</td>
-                  <td>Terry Richardson helvetica tousled street art master</td>
-                  <td>$10.70</td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>Grown Ups Blue Ray</td>
-                  <td>422-568-642</td>
-                  <td>Tousled lomo letterpress</td>
-                  <td>$25.99</td>
-                </tr>
-                </tbody>
-              </table>
-            </div>
-            <!-- /.col -->
-          </div>
-          <!-- /.row -->
+                <div class="form-group">
+                  <label for="" class="col-sm-3 control-label">Sub Total</label>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control" id="" placeholder="Sub Total" readonly>
+                  </div>
+                </div>
 
-          <div class="row">
-            <!-- accepted payments column -->
-            <div class="col-xs-6">
-              <p class="lead">Catatan Penjualan :</p>
-                <textarea name="" id="" cols="60" rows="10" placeholder="Jika tidak ada harap dikosongkan"></textarea>
-            </div>
-            <!-- /.col -->
-            <div class="col-xs-6">
-              <p class="lead">Pembayaran</p>
+                <div class="form-group">
+                    <label for="" class="col-sm-3 control-label">Diskon</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" id="" placeholder="Diskon">
+                    </div>
+                </div>
 
-              <div class="table-responsive">
-                <table class="table">
-                  <tr>
-                    <th style="width:50%">Subtotal:</th>
-                    <td>$250.30</td>
-                  </tr>
-                  <tr>
-                    <th>Tax (9.3%)</th>
-                    <td>$10.34</td>
-                  </tr>
-                  <tr>
-                    <th>Shipping:</th>
-                    <td>$5.80</td>
-                  </tr>
-                  <tr>
-                    <th>Total:</th>
-                    <td>$265.24</td>
-                  </tr>
-                </table>
+                <div class="form-group">
+                    <label for="" class="col-sm-3 control-label">PPN (%)</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" id="" placeholder="PPN" value="10">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="" class="col-sm-3 control-label">DLL</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" id="" placeholder="DLL">
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="" class="col-sm-3 control-label">Total Harga</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" id="" placeholder="Total Harga" readonly>
+                    </div>
+                </div>
+
               </div>
-            </div>
-            <!-- /.col -->
+              <!-- /.box-body -->
+              <div class="box-footer">
+                <button type="submit" class="btn btn-danger">CANCEL</button>
+                <button type="submit" class="btn btn-primary pull-right">BAYAR</button>
+              </div>
+              <!-- /.box-footer -->
+            </form>
           </div>
-          <!-- /.row -->
-
-          <!-- this row will not appear when printing -->
-          <div class="row no-print">
-            <div class="col-xs-12">
-              <button type="button" class="btn btn-primary pull-right"><i class="fa fa-credit-card"></i> Bayar
-              </button>
-              <button type="button" class="btn btn-danger pull-right" style="margin-right: 5px;">
-                <i class="fa fa-download"></i> Reset
-              </button>
-            </div>
-          </div>
-        </section>
-        <!-- /.content -->
-        <div class="clearfix"></div>
+          <!-- /.box -->
+        </div>
+        <!--/.col (right) -->
       </div>
-      <!-- /.content-wrapper -->
+      <!-- /.row -->
+
+      <div class="row">
+        <div class="col-md-12 col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                <h3 class="box-title">Transaksi</h3>
+                </div>
+                <div class="box-body">
+
+                    <div class="row">
+                        <div class="col-xs-2">
+                        <input type="text" id="kode_barang" name="kode_barang" class="form-control" placeholder="Kode Barang">
+                        </div>
+                        <div class="col-xs-3">
+                        <input type="text" id="nama_barang" name="nama_barang" class="form-control" placeholder="Nama Barang" readonly>
+                        </div>
+                        <div class="col-xs-2">
+                        <input type="number" id="harga" name="harga" class="form-control" placeholder="Harga">
+                        </div>
+                        <div class="col-xs-1">
+                        <input type="number" id="qty" name="qty" class="form-control" placeholder="Qty">
+                        </div>
+                        <div class="col-xs-2">
+                        <input type="number" id="diskon" name="diskon" class="form-control" placeholder="Diskon">
+                        </div>
+                        <div class="col-xs-2">
+                        <input type="number" id="sub_total" name="sub_total" class="form-control" placeholder="Sub. Total" readonly>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- /.box-body -->
+            </div>
+        </div>
+      </div>
+      <!-- /.box -->
+
+      <div class="row">
+            <div class="col-md-12 col-xs-12">
+                <div class="box box-secondary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">
+                                <button id="btn_tambah" name="btn_tambah" type="button" class="btn btn-primary"> <span class="fa fa-plus"></span> TAMBAH </button>
+                                <button id="btn_data_barang" name="btn_data_barang" type="button" class="btn btn-info"> <span class="fa fa-plus"></span> DATA BARANG </button>
+                            </h3>
+                        </div>
+                    <div class="box-body">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <table id="tabel_barang" class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Kode Barang</th>
+                                            <th>Nama Barang</th>
+                                            <th>Harga</th>
+                                            <th>Qty</th>
+                                            <th>Diskon</th>
+                                            <th>Sub. Total</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                  </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+            </div>
+          </div>
+          <!-- /.box -->
+
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
 
 {{-- MODAL --}}
 
@@ -173,7 +242,7 @@
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span></button>
-              <h4 class="modal-title text-center">Modal Form</h4>
+              <h4 class="modal-title text-center">Modal</h4>
             </div>
             <div class="modal-body">
               <p>One fine body&hellip;</p>
@@ -197,8 +266,6 @@
 
 @push('javascript')
     <!-- DataTables -->
-    <script src="{{ asset('assets/admin') }}/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
-    <script src="{{ asset('assets/admin') }}/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
 
     <script>
 
@@ -211,167 +278,194 @@ $.ajaxSetup({
     }
 });
 
-    var table = $('#data').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: {
-            url: "{{ route('satuan.datatables') }}",
-            type: "POST"
-        },
-        columns: [
-            {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-            {data: 'kode_satuan', name: 'kode_satuan'},
-            {data: 'nama_satuan', name: 'nama_satuan'},
-            {data: 'action', name: 'action', orderable: false, searchable: false},
-        ]
+// Init datepicker
+$('#tanggal').datepicker({
+    format: 'dd-mm-yyyy',
+    todayHighlight: true,
+    autoclose: true
+}).datepicker("setDate",'now');
+
+
+$('#btn_data_barang').on('click', function(e){
+        e.preventDefault();
+
+        var me          = $(this),
+            url         = "{!! route('penjualan.data_barang'); !!}",
+            method      = "POST",
+            dataType    = "HTML";
+
+        $.ajax({
+                url: url,
+                type: method,
+                dataType: dataType,
+                beforeSend: function(res){
+
+                },
+                success: function(res){
+                    $('.modal-body').html(res);
+                    var table = $('.modal-body .table').DataTable({
+                        scrollX: true,
+                        // serverSide: true,
+                        processing: true,
+                        ajax: {
+                            url: "{!! route('api.barang.index') !!}",
+                            type: "GET"
+                        },
+                        columns: [
+                            {data: 'kode_barang', name: 'kode_barang'},
+                            {data: 'nama_barang', name: 'nama_barang'},
+                            {data: 'stok', name: 'stok'},
+                            {data: 'stok_min', name: 'stok_min'},
+                            {data: 'nama_satuan', name: 'nama_satuan'},
+                            {data: 'nama_kategori', name: 'nama_kategori'},
+                            {data: 'harga_jual', name: 'harga_jual'},
+                            {data: 'keterangan', name: 'keterangan'},
+                        ]
+                    });
+                    $('#modal').modal('show');
+                },
+                error: function(xhr, err){
+
+                    // var msg = $('.alert #alert_msg').empty();
+                    // var error = xhr.responseJSON;
+
+                    // // Menampilkan pesan error dari json response error
+                    // $.each(error.errors, function(key, value){
+                    //     msg.append("<p>"+ value[0] +"</p>");
+                    // });
+                    // $('#alert').show();
+                }
+
+            })
+        $('#modal').modal('show');
+
     });
 
 
+});
 
-})
+
+    function hitung_sub_total(){
+        var qty = $('#qty').val(),
+            harga = $('#harga').val(),
+            diskon = $('#diskon').val();
+
+        var sub_total = qty * harga - diskon;
+        $('#sub_total').val(sub_total);
+
+    }
+
+    $('#qty, #diskon').on('keyup keypress blur change', function(e){
+        hitung_sub_total();
+    })
+
 
 
     $('#btn_tambah').on('click', function(e){
         e.preventDefault();
-        $('#modal .modal-title').html('TAMBAH DATA');
-        var url = "{{ route('satuan.create') }}",
-            method = "GET",
-            dataType = "HTML";
+        var kode_barang = $('#kode_barang').val(),
+            nama_barang = $('#nama_barang').val(),
+            harga = $('#harga').val(),
+            qty = $('#qty').val(),
+            diskon = $('#diskon').val(),
+            sub_total = $('#sub_total').val();
 
-        $.ajax({
-            url: url,
-            type: method,
-            dataType: dataType,
-            success: function(res){
-                $('.modal-body').html(res);
-                $('#modal').modal('show');
-            }
-        });
+        if(kode_barang !== "" && nama_barang !== "" && harga !== "" && qty !== "" && diskon !== "" && sub_total !== ""){
+
+          $('#tabel_barang')
+            .append("<tr>" +
+                "<td>" + kode_barang + "</td>" +
+                "<td>" + nama_barang + "</td>" +
+                "<td>" + harga + "</td>" +
+                "<td>" + qty + "</td>" +
+                "<td>" + diskon + "</td>" +
+                "<td>" + sub_total + "</td>" +
+                "<td> <button type='button' class='btn btn-danger' id='btn_hapus' name='btn_hapus'> Hapus </button> <button type='button' class='btn btn-info' id='btn_ubah' name='btn_ubah'> Ubah </button> </td>"+
+                "</tr>");
+
+            $('#kode_barang').val("");
+            $('#nama_barang').val("");
+            $('#harga').val("");
+            $('#qty').val("");
+            $('#diskon').val("");
+            $('#sub_total').val("");
+
+        }
 
     });
 
 
-    $('#modal').on('submit', 'form', function(e){
+    $('.table tbody').on('click', '#btn_hapus', function(){
+        $(this).closest('tr').remove();
+    });
+
+    $('.table tbody').on('click', '#btn_ubah', function(){
+        var kode_barang = $(this).closest('tr').find('td:eq(0)').text(),
+            nama_barang = $(this).closest('tr').find('td:eq(1)').text(),
+            harga = $(this).closest('tr').find('td:eq(2)').text(),
+            qty = $(this).closest('tr').find('td:eq(3)').text(),
+            diskon = $(this).closest('tr').find('td:eq(4)').text(),
+            sub_total = $(this).closest('tr').find('td:eq(5)').text();
+
+        $('#kode_barang').val(kode_barang);
+        $('#nama_barang').val(nama_barang);
+        $('#harga').val(harga);
+        $('#qty').val(qty);
+        $('#diskon').val(diskon);
+        $('#sub_total').val(sub_total);
+
+        $(this).closest('tr').remove();
+
+    });
+
+
+    $('.modal').on('dblclick', '#data tr', function(e){
         e.preventDefault();
+        var row = $(this).closest("tr");
+        var kode=row.find("td:eq(0)").text();
+
         var me          = $(this),
-            url         = me.attr('action'),
-            method      = me.attr('method'),
+            url         = "{!! route('api.barang.index') !!}" + "/" + kode,
+            method      = "GET",
             dataType    = "JSON",
-            data        = me.serialize();
+            data        = {kode: kode};
 
-        var result = confirm("Apakah anda yakin ingin submit data tersebut?");
-
-        if(result){
-
-            $.ajax({
+        $.ajax({
                 url: url,
                 type: method,
-                dataType: dataType,
                 data: data,
+                dataType: dataType,
                 beforeSend: function(res){
 
                 },
                 success: function(res){
-                    alert(res.msg);
-                    $('#alert').hide();
-                    if(res.status == true){
-                        $('#data').DataTable().ajax.reload();
-                        me.trigger('reset');
-                        $('#modal').modal('hide');
-                    }
+
+                    $('#kode_barang').val(res.data.kode_barang);
+                    $('#nama_barang').val(res.data.nama_barang);
+                    $('#harga').val(res.data.harga_jual);
+                    $('#diskon').val(0);
+                    $('#qty').focus();
+
+
                 },
                 error: function(xhr, err){
 
-                    var msg = $('.alert #alert_msg').empty();
-                    var error = xhr.responseJSON;
+                    // var msg = $('.alert #alert_msg').empty();
+                    // var error = xhr.responseJSON;
 
-                    // Menampilkan pesan error dari json response error
-                    $.each(error.errors, function(key, value){
-                        msg.append("<p>"+ value[0] +"</p>");
-                    });
-                    $('#alert').show();
+                    // // Menampilkan pesan error dari json response error
+                    // $.each(error.errors, function(key, value){
+                    //     msg.append("<p>"+ value[0] +"</p>");
+                    // });
+                    // $('#alert').show();
                 }
 
             })
 
-        }
+        $('#modal').modal('hide');
 
     });
 
-
-    $('#data').on('click', '#btn_edit', function(e){
-        e.preventDefault();
-        $('#modal .modal-title').html('EDIT DATA');
-        var me = $(this),
-            url = me.attr('href'),
-            method = "GET",
-            dataType = "HTML";
-
-        $.ajax({
-            url: url,
-            type: method,
-            dataType: dataType,
-            success: function(res){
-                $('.modal-body').html(res);
-                $('#modal').modal('show');
-            }
-        });
-
-    });
-
-    $('#data').on('click', '#btn_delete', function(e){
-        e.preventDefault();
-        var me = $(this),
-            url = me.attr('href'),
-            method = "DELETE",
-            dataType = "JSON";
-
-        var result = confirm("Apakah anda yakin ingin menghapus data tersebut?");
-
-        if(result){
-
-            $.ajax({
-                url: url,
-                type: method,
-                dataType: dataType,
-                beforeSend: function(res){
-                    alert('beforesend');
-                },
-                success: function(res){
-                    alert(res.msg);
-                    if(res.status == true){
-                        $('#data').DataTable().ajax.reload();
-                        me.trigger('reset');
-                    }
-                },
-                error: function(xhr, err){
-                    alert('error');
-                }
-
-            });
-        }
-    });
-
-
-    $('#data').on('click', '#btn_show', function(e){
-        e.preventDefault();
-        $('#modal .modal-title').html('SHOW DATA');
-        var me = $(this),
-            url = me.attr('href'),
-            method = "GET",
-            dataType = "HTML";
-
-        $.ajax({
-            url: url,
-            type: method,
-            dataType: dataType,
-            success: function(res){
-                $('.modal-body').html(res);
-                $('#modal').modal('show');
-            }
-        });
-
-    });
 
     </script>
 

@@ -6,6 +6,8 @@
         <th>Stok Min</th>
         <th>Satuan</th>
         <th>Kategori</th>
+        <th>Harga Beli</th>
+        <th>Harga Jual</th>
         <th>Foto</th>
         <th>Keterangan</th>
     </thead>
@@ -17,6 +19,8 @@
             <td> {{ $data->stok_min }} </td>
             <td> {{ $data->nama_satuan }} </td>
             <td> {{ $data->nama_kategori }} </td>
+            <td> {{ $data->harga_beli }} </td>
+            <td> {{ $data->harga_jual }} </td>
             <td> {!! Storage::exists($data->foto) ? '<img src="'. Storage::url($data->foto) .'" height="42" width="42">' : '<span class="badge badge-info"> Foto tidak ditemukan </span>' !!} </td>
             <td> {{ $data->keterangan }} </td>
         </tr>

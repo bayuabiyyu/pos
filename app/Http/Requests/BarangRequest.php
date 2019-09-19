@@ -37,11 +37,11 @@ class BarangRequest extends FormRequest
             'kode_kategori' => 'required|max:128',
             'kode_satuan' => 'required|max:128',
             'nama_barang' => 'required|max:50',
-            'stok' => 'required|numeric|max:128',
-            'stok_min' => 'required|numeric|max:128',
-            'harga_beli' => 'required|numeric|max:128',
-            'harga_jual' => 'required|numeric|max:128',
-            'keterangan' => 'required|max:128',
+            'stok' => 'required|numeric|max:10000000',
+            'stok_min' => 'required|numeric|max:10000000',
+            'harga_beli' => 'required|numeric|max:10000000',
+            'harga_jual' => 'required|numeric|max:10000000',
+            'keterangan' => 'required|max:300',
             'foto' => 'required|image|mimes:jpeg,png,jpg|max:1024',
         ];
         return $rules;
@@ -53,11 +53,11 @@ class BarangRequest extends FormRequest
             'kode_kategori' => 'required|max:128',
             'kode_satuan' => 'required|max:128',
             'nama_barang' => 'required|max:50',
-            'stok' => 'required|numeric|max:128',
-            'stok_min' => 'required|numeric|max:128',
-            'harga_beli' => 'required|numeric|max:128',
-            'harga_jual' => 'required|numeric|max:128',
-            'keterangan' => 'required|max:128',
+            'stok' => 'required|numeric|max:10000000',
+            'stok_min' => 'required|numeric|max:10000000',
+            'harga_beli' => 'required|numeric|max:10000000',
+            'harga_jual' => 'required|numeric|max:10000000',
+            'keterangan' => 'required|max:300',
             'foto' => 'image|mimes:jpeg,png,jpg|max:1024',
         ];
         return $rules;

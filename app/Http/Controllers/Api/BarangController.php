@@ -1,19 +1,27 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Api;
 
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Model\Pelanggan;
+use App\Http\Requests\BarangRequest;
+use App\Model\Barang;
+use App\Model\Kategori;
+use App\Model\Satuan;
+use DataTables;
 
-class PenjualanController extends Controller
+class BarangController extends Controller
 {
 
-    protected $pelanggan;
+    protected $barang, $kategori, $satuan;
 
-    public function __construct(Pelanggan $pelanggan)
+    public function __construct(Barang $barang, Kategori $kategori, Satuan $satuan)
     {
-        $this->pelanggan = $pelanggan;
+        $this->barang = $barang;
+        $this->kategori = $kategori;
+        $this->satuan = $satuan;
     }
 
     /**
@@ -23,7 +31,8 @@ class PenjualanController extends Controller
      */
     public function index()
     {
-        return view('admin.transaksi.penjualan.index');
+        $response['data'] = $this->barang->getAllBarang();
+        return response()->json($response);
     }
 
     /**
@@ -33,8 +42,7 @@ class PenjualanController extends Controller
      */
     public function create()
     {
-        $data['pelanggan'] = $this->pelanggan->all();
-        return view('admin.transaksi.penjualan.form', compact('data'));
+        //
     }
 
     /**
@@ -56,7 +64,8 @@ class PenjualanController extends Controller
      */
     public function show($id)
     {
-        //
+        $response['data'] = $this->barang->getBarangByKode($id);
+        return response()->json($response);
     }
 
     /**
@@ -94,6 +103,14 @@ class PenjualanController extends Controller
     }
 
     public function dataBarang(){
-        return view('admin.transaksi.penjualan.data_barang');
+        $data = $this->barang->getAllBarang();
+        return DataTables::of($data)
+                ->addIndexColumn()
+                ->addColumn('image', function($data){
+                    $path = Storage::url($data->foto);
+                    return Storage::exists($data->foto) ? '<img src="'. $path .'" height="42" width="42">' : '<span class="badge badge-info"> Foto tidak ditemukan </span>';
+                })
+                ->rawColumns(['image'])
+                ->make(true);
     }
 }
