@@ -5,15 +5,17 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Pelanggan;
+use App\Model\Penjualan;
 
 class PenjualanController extends Controller
 {
 
-    protected $pelanggan;
+    protected $pelanggan, $penjualan;
 
-    public function __construct(Pelanggan $pelanggan)
+    public function __construct(Pelanggan $pelanggan, Penjualan $penjualan)
     {
         $this->pelanggan = $pelanggan;
+        $this->penjualan = $penjualan;
     }
 
     /**
@@ -33,7 +35,16 @@ class PenjualanController extends Controller
      */
     public function create()
     {
+        $penjualan = $this->penjualan->get();
+        $kode_transaksi = "Invoice/Penjualan/";
+        if($penjualan){
+            $kode_transaksi .= 1;
+        }else{
+            $kode_transaksi .= count($penjualan) + 1;
+        }
+
         $data['pelanggan'] = $this->pelanggan->all();
+        $data['kode_transaksi'] = $kode_transaksi;
         return view('admin.transaksi.penjualan.form', compact('data'));
     }
 

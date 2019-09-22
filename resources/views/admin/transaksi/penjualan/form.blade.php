@@ -26,6 +26,8 @@
 
     <!-- Main content -->
     <section class="content">
+    <!-- form start -->
+    <form action="" method="post" id="form_transaksi" name="form_transaksi">
       <div class="row">
         <!-- left column -->
         <div class="col-md-6">
@@ -35,18 +37,15 @@
               <h3 class="box-title">Data Transaksi</h3>
             </div>
             <!-- /.box-header -->
-            <!-- form start -->
-            <form class="form-horizontal">
+            <div class="form-horizontal">
                     <div class="box-body">
 
                     <div class="form-group">
                         <label for="" class="col-sm-3 control-label">Kode Transaksi </label>
-                        <div class="col-sm-3">
-                            <input type="text" class="form-control" id="" name="" placeholder="Tanggal" value="1" readonly>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="kode_transaksi" name="kode_transaksi" placeholder="Tanggal" value="{{ $data['kode_transaksi'] }}" readonly>
                         </div>
-                        <div class="col-sm-3">
-                            <input type="checkbox" name="" id=""> Kode Otomatis
-                        </div>
+
                     </div>
 
                     <div class="form-group">
@@ -68,14 +67,22 @@
                     </div>
 
                     <div class="form-group">
-                            <label for="" class="col-sm-3 control-label">Pembayaran</label>
-                            <div class="col-sm-5">
-                                <select class="form-control" name="pembayaran" id="pembayaran">
-                                    <option value="transfer">Transfer</option>
-                                    <option value="cash">Cash</option>
-                                </select>
-                            </div>
+                        <label for="" class="col-sm-3 control-label">Jenis Pembayaran</label>
+                        <div class="col-sm-5">
+                            <select class="form-control" name="jenis_pembayaran" id="jenis_pembayaran">
+                                <option value="transfer">Transfer</option>
+                                <option value="cash">Cash</option>
+                            </select>
                         </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-3 control-label">Keterangan</label>
+                        <div class="col-sm-8">
+                            <textarea class="form-control" name="keterangan" id="keterangan" cols="" rows=""></textarea>
+                        </div>
+                    </div>
 
 
                     </div>
@@ -87,7 +94,7 @@
                       </div>
                     </div>
                     <!-- /.box-footer -->
-                  </form>
+                </div>
           </div>
           <!-- /.box -->
         </div>
@@ -102,34 +109,35 @@
             </div>
             <!-- /.box-header -->
             <!-- form start -->
-            <form class="form-horizontal">
+            <div class="form-horizontal">
               <div class="box-body">
 
                 <div class="form-group">
-                  <label for="" class="col-sm-3 control-label">Sub Total</label>
+                  <label for="" class="col-sm-3 control-label">Total Sub. Total</label>
                   <div class="col-sm-5">
-                    <input type="text" class="form-control" id="" placeholder="Sub Total" readonly>
+                    <input type="number" class="form-control" id="total_sub_total" name="total_sub_total" placeholder="Total Sub. Total" value="0" readonly>
                   </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="" class="col-sm-3 control-label">Diskon</label>
+                    <label for="" class="col-sm-3 control-label">Total. Diskon</label>
                     <div class="col-sm-5">
-                        <input type="text" class="form-control" id="" placeholder="Diskon">
+                        <input type="number" class="form-control" id="total_diskon" name="total_diskon" placeholder="Total Diskon" value="0" readonly>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="" class="col-sm-3 control-label">PPN (%)</label>
                     <div class="col-sm-2">
-                        <input type="text" class="form-control" id="" placeholder="PPN" value="10">
+                        <input type="number" class="form-control" id="pajak" name="pajak" placeholder="PPN" value="0">
                     </div>
+
                 </div>
 
                 <div class="form-group">
                     <label for="" class="col-sm-3 control-label">DLL</label>
                     <div class="col-sm-5">
-                        <input type="text" class="form-control" id="" placeholder="DLL">
+                        <input type="number" class="form-control" id="dll" name="dll" placeholder="DLL" value="0">
                     </div>
                 </div>
 
@@ -137,7 +145,7 @@
                 <div class="form-group">
                     <label for="" class="col-sm-3 control-label">Total Harga</label>
                     <div class="col-sm-5">
-                        <input type="text" class="form-control" id="" placeholder="Total Harga" readonly>
+                        <input type="number" class="form-control" id="total_harga" name="total_harga" placeholder="Total Harga" value="0" readonly>
                     </div>
                 </div>
 
@@ -148,11 +156,12 @@
                 <button type="submit" class="btn btn-primary pull-right">BAYAR</button>
               </div>
               <!-- /.box-footer -->
-            </form>
+                </div>
           </div>
           <!-- /.box -->
         </div>
         <!--/.col (right) -->
+    </form>
       </div>
       <!-- /.row -->
 
@@ -160,7 +169,7 @@
         <div class="col-md-12 col-xs-12">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                <h3 class="box-title">Transaksi</h3>
+                <h3 class="box-title">Item</h3>
                 </div>
                 <div class="box-body">
 
@@ -198,8 +207,9 @@
                         <div class="box-header with-border">
                             <h3 class="box-title">
                                 <button id="btn_tambah" name="btn_tambah" type="button" class="btn btn-primary"> <span class="fa fa-plus"></span> TAMBAH </button>
-                                <button id="btn_data_barang" name="btn_data_barang" type="button" class="btn btn-info"> <span class="fa fa-plus"></span> DATA BARANG </button>
+                                <button id="btn_data_barang" name="btn_data_barang" type="button" class="btn btn-secondary"> <span class="fa fa-file"></span> DATA BARANG </button>
                             </h3>
+                            <h3>Detail Item</h3>
                         </div>
                     <div class="box-body">
                             <div class="row">
@@ -342,15 +352,48 @@ $('#btn_data_barang').on('click', function(e){
     });
 
 
+    // ACTION BAYAR //
+
+    $('#form_transaksi').on('submit', function(e){
+        e.preventDefault();
+        var me = $(this),
+            data = me.serialize(),
+            url = me.attr('action'),
+            method = me.attr('method');
+
+        console.log(data);
+
+    });
+
+
+
+    // END
+
+
 });
 
+
+    function hitung_total_harga(){
+        var total_sub_total = $('#total_sub_total').val(),
+            total_diskon = $('#total_diskon').val(),
+            pajak = $('#pajak').val(),
+            dll = $('#dll').val();
+
+        var total_harga = Number(total_sub_total) - Number(total_diskon) + Number(pajak) + Number(dll);
+        $('#total_harga').val(total_harga);
+
+    }
+
+    $('#total_sub_total, #total_diskon, #pajak, #dll').on('keyup keypress blur change', function(e){
+        hitung_total_harga();
+    })
 
     function hitung_sub_total(){
         var qty = $('#qty').val(),
             harga = $('#harga').val(),
             diskon = $('#diskon').val();
 
-        var sub_total = qty * harga - diskon;
+        var sub_total = Number(qty) * Number(harga) - Number(diskon);
         $('#sub_total').val(sub_total);
 
     }
@@ -358,7 +401,6 @@ $('#btn_data_barang').on('click', function(e){
     $('#qty, #diskon').on('keyup keypress blur change', function(e){
         hitung_sub_total();
     })
-
 
 
     $('#btn_tambah').on('click', function(e){
@@ -389,6 +431,15 @@ $('#btn_data_barang').on('click', function(e){
             $('#qty').val("");
             $('#diskon').val("");
             $('#sub_total').val("");
+
+            // Fill to Pembayaran
+            var total_sub_total = Number(sub_total) +  Number($('#total_sub_total').val());
+            $('#total_sub_total').val(total_sub_total);
+
+            var total_diskon = Number(diskon) + Number($('#total_diskon').val());
+            $('#total_diskon').val(total_diskon);
+
+            // hitung_total_harga();
 
         }
 
