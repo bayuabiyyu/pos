@@ -45,7 +45,16 @@
                         <div class="col-sm-9">
                             <input type="text" class="form-control" id="kode_transaksi" name="kode_transaksi" placeholder="Tanggal" value="{{ $data['kode_transaksi'] }}" readonly>
                         </div>
+                    </div>
 
+                    <div class="form-group">
+                        <label for="" class="col-sm-3 control-label">User</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control" id="user" name="user" placeholder="User" value="{{ Auth::user()->id }}" readonly>
+                        </div>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="nama_user" name="nama_user" placeholder="User" value="{{ Auth::user()->nama }}" readonly>
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -90,7 +99,7 @@
                     <div class="box-footer">
                       {{-- <p>* Harap isi data transaksi dengan benar</p> --}}
                       <div class="text-left">
-                        <button type="button" class="btn btn-primary"> <span class="fa fa-plus"></span> TRANSAKSI BARU (F5)</button>
+                        <button type="button" class="btn btn-primary"> <span class="fa fa-refresh"></span> TRANSAKSI BARU (F5)</button>
                       </div>
                     </div>
                     <!-- /.box-footer -->
@@ -152,8 +161,8 @@
               </div>
               <!-- /.box-body -->
               <div class="box-footer">
-                <button type="submit" class="btn btn-danger">CANCEL</button>
-                <button type="submit" class="btn btn-primary pull-right">BAYAR</button>
+                <button type="submit" class="btn btn-danger"><span class="fa fa-eraser"></span> RESET</button>
+                <button type="submit" class="btn btn-primary pull-right"> <span class="fa fa-money"></span> BAYAR</button>
               </div>
               <!-- /.box-footer -->
                 </div>
@@ -365,21 +374,42 @@ $('#btn_data_barang').on('click', function(e){
 
     });
 
-
-
     // END
 
 
 });
 
+    function hitung_total_sub_diskon(){
+        // Loop From Table
+        var tabel = $('#tabel_barang > tbody > tr');
+        var total_sub_total = 0,
+            total_diskon = 0;
+
+        tabel.each(function(){
+            var sub_total = $(this).find('td:eq(5)').text();
+                diskon = $(this).find('td:eq(4)').text();
+
+            total_sub_total += Number(sub_total);
+            total_diskon += Number(diskon);
+
+        });
+
+        $('#total_sub_total').val(total_sub_total);
+        $('#total_diskon').val(total_diskon);
+
+        hitung_total_harga();
+
+    }
+
 
     function hitung_total_harga(){
+
         var total_sub_total = $('#total_sub_total').val(),
             total_diskon = $('#total_diskon').val(),
             pajak = $('#pajak').val(),
             dll = $('#dll').val();
 
-        var total_harga = Number(total_sub_total) - Number(total_diskon) + Number(pajak) + Number(dll);
+        var total_harga = Number(total_sub_total) - Number(total_diskon) + ( Number(total_sub_total) * Number(pajak) / 100 ) + Number(dll);
         $('#total_harga').val(total_harga);
 
     }
@@ -433,13 +463,7 @@ $('#btn_data_barang').on('click', function(e){
             $('#sub_total').val("");
 
             // Fill to Pembayaran
-            var total_sub_total = Number(sub_total) +  Number($('#total_sub_total').val());
-            $('#total_sub_total').val(total_sub_total);
-
-            var total_diskon = Number(diskon) + Number($('#total_diskon').val());
-            $('#total_diskon').val(total_diskon);
-
-            // hitung_total_harga();
+            hitung_total_sub_diskon();
 
         }
 
@@ -448,6 +472,7 @@ $('#btn_data_barang').on('click', function(e){
 
     $('.table tbody').on('click', '#btn_hapus', function(){
         $(this).closest('tr').remove();
+        hitung_total_sub_diskon();
     });
 
     $('.table tbody').on('click', '#btn_ubah', function(){
@@ -466,6 +491,7 @@ $('#btn_data_barang').on('click', function(e){
         $('#sub_total').val(sub_total);
 
         $(this).closest('tr').remove();
+        hitung_total_sub_diskon();
 
     });
 
@@ -473,7 +499,7 @@ $('#btn_data_barang').on('click', function(e){
     $('.modal').on('dblclick', '#data tr', function(e){
         e.preventDefault();
         var row = $(this).closest("tr");
-        var kode=row.find("td:eq(0)").text();
+        var kode = row.find("td:eq(0)").text();
 
         var me          = $(this),
             url         = "{!! route('api.barang.index') !!}" + "/" + kode,
@@ -516,7 +542,6 @@ $('#btn_data_barang').on('click', function(e){
         $('#modal').modal('hide');
 
     });
-
 
     </script>
 
