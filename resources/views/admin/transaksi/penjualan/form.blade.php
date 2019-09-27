@@ -27,7 +27,7 @@
     <!-- Main content -->
     <section class="content">
     <!-- form start -->
-    <form action="" method="post" id="form_transaksi" name="form_transaksi">
+    <form action="{{ route('penjualan.store') }}" method="post" id="form_transaksi" name="form_transaksi" enctype="multipart/form-data">
       <div class="row">
         <!-- left column -->
         <div class="col-md-6">
@@ -43,7 +43,7 @@
                     <div class="form-group">
                         <label for="" class="col-sm-3 control-label">Kode Transaksi </label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" id="kode_transaksi" name="kode_transaksi" placeholder="Tanggal" value="{{ $data['kode_transaksi'] }}" readonly>
+                            <input type="text" class="form-control" id="kode_transaksi" name="kode_transaksi" placeholder="kode transaksi" value="{{ $data['kode_transaksi'] }}" readonly>
                         </div>
                     </div>
 
@@ -150,7 +150,6 @@
                     </div>
                 </div>
 
-
                 <div class="form-group">
                     <label for="" class="col-sm-3 control-label">Total Harga</label>
                     <div class="col-sm-5">
@@ -158,10 +157,26 @@
                     </div>
                 </div>
 
+
+                <div class="form-group">
+                    <label for="" class="col-sm-3 control-label">Bayar</label>
+                    <div class="col-sm-5">
+                        <input type="number" class="form-control" id="bayar" name="bayar" placeholder="Bayar" value="0">
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="" class="col-sm-3 control-label">Kembali</label>
+                    <div class="col-sm-5">
+                        <input type="number" class="form-control" id="kembali" name="kembali" placeholder="Kembali" value="0">
+                    </div>
+                </div>
+
               </div>
               <!-- /.box-body -->
               <div class="box-footer">
-                <button type="submit" class="btn btn-danger"><span class="fa fa-eraser"></span> RESET</button>
+                <button type="reset" class="btn btn-danger"><span class="fa fa-eraser"></span> RESET</button>
                 <button type="submit" class="btn btn-primary pull-right"> <span class="fa fa-money"></span> BAYAR</button>
               </div>
               <!-- /.box-footer -->
@@ -290,21 +305,24 @@
 
 $(document).ready(function(){
 
-//HEADER AJAX CSRF LARAVEL
+// HEADER AJAX CSRF LARAVEL //
 $.ajaxSetup({
     headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }
 });
+// END HEADER AJAX CSRF LARAVEL //
 
-// Init datepicker
+// INIT DATEPICKER //
 $('#tanggal').datepicker({
     format: 'dd-mm-yyyy',
     todayHighlight: true,
     autoclose: true
 }).datepicker("setDate",'now');
+// END INIT DATEPICKER //
 
 
+// TAMPILKAN LIST DATABARANG //
 $('#btn_data_barang').on('click', function(e){
         e.preventDefault();
 
@@ -359,26 +377,71 @@ $('#btn_data_barang').on('click', function(e){
         $('#modal').modal('show');
 
     });
-
+// END TAMPILKAN LIST DATABARANG //
 
     // ACTION BAYAR //
-
     $('#form_transaksi').on('submit', function(e){
         e.preventDefault();
         var me = $(this),
-            data = me.serialize(),
+            data = me.serializeArray(),
             url = me.attr('action'),
-            method = me.attr('method');
+            method = me.attr('method'),
+            dataType = "JSON";
 
-        console.log(data);
+        var tabel = $('#tabel_barang > tbody > tr');
+        var kode_barang ,
+            harga       ,
+            qty         ,
+            diskon      ,
+            sub_total   ;
+
+            tabel.each(function(){
+
+                kode_barang = $(this).find('td:eq(0)').text(),
+                harga =  $(this).find('td:eq(2)').text(),
+                qty =  $(this).find('td:eq(3)').text(),
+                diskon =  $(this).find('td:eq(4)').text(),
+                sub_total   =  $(this).find('td:eq(5)').text();
+
+                data.push( {name: "kode_barang[]", value: kode_barang} );
+                data.push( {name: "harga[]", value: harga} );
+                data.push( {name: "qty[]", value: qty} );
+                data.push( {name: "diskon[]", value: diskon} );
+                data.push( {name: "sub_total[]", value: sub_total} );
+
+            });
+
+        $.ajax({
+            url: url,
+            data: data,
+            type: method,
+            dataType: dataType,
+            // processData: false,
+            // contentType: false,
+            beforeSend: function(){
+                alert("before send");
+            },
+            success: function(res){
+                alert("success");
+                console.log(res);
+            },
+            error: function(xhr, status, error){
+                alert("error");
+                console.log(xhr);
+            },
+            complete: function(){
+                alert("complete");
+            }
+        });
+
 
     });
-
-    // END
-
+    // END ACTION BAYAR //
 
 });
 
+
+// PROSES PERHITUNGAN BAYAR //
     function hitung_total_sub_diskon(){
         // Loop From Table
         var tabel = $('#tabel_barang > tbody > tr');
@@ -432,7 +495,10 @@ $('#btn_data_barang').on('click', function(e){
         hitung_sub_total();
     })
 
+// END PROSES PERHITUNGAN BAYAR //
 
+
+// TAMBAH DATA KE TABEL TRANSAKSI //
     $('#btn_tambah').on('click', function(e){
         e.preventDefault();
         var kode_barang = $('#kode_barang').val(),
@@ -468,8 +534,9 @@ $('#btn_data_barang').on('click', function(e){
         }
 
     });
+// END TAMBAH DATA KE TABEL TRANSAKSI //
 
-
+// HAPUS BARANG DARI TABEL //
     $('.table tbody').on('click', '#btn_hapus', function(){
         $(this).closest('tr').remove();
         hitung_total_sub_diskon();
@@ -494,8 +561,9 @@ $('#btn_data_barang').on('click', function(e){
         hitung_total_sub_diskon();
 
     });
+// HAPUS BARANG DARI TABEL //
 
-
+// DATA BARANG TABEL TO FIELD QTY DLL //
     $('.modal').on('dblclick', '#data tr', function(e){
         e.preventDefault();
         var row = $(this).closest("tr");
@@ -542,6 +610,7 @@ $('#btn_data_barang').on('click', function(e){
         $('#modal').modal('hide');
 
     });
+// END DATA BARANG TABEL TO FIELD QTY DLL //
 
     </script>
 
