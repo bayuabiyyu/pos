@@ -26,6 +26,13 @@
 
     <!-- Main content -->
     <section class="content">
+
+    <div id="alert" class="alert alert-danger alert-dismissible" role="alert" style="display:none;">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <h4><i class="icon fa fa-ban"></i> Alert!</h4>
+        <div id="alert_msg"> Message </div>
+    </div>
+
     <!-- form start -->
     <form action="{{ route('penjualan.store') }}" method="post" id="form_transaksi" name="form_transaksi" enctype="multipart/form-data">
       <div class="row">
@@ -169,7 +176,7 @@
                 <div class="form-group">
                     <label for="" class="col-sm-3 control-label">Kembali</label>
                     <div class="col-sm-5">
-                        <input type="number" class="form-control" id="kembali" name="kembali" placeholder="Kembali" value="0">
+                        <input type="number" class="form-control" id="kembali" name="kembali" placeholder="Kembali" value="0" readonly>
                     </div>
                 </div>
 
@@ -427,7 +434,14 @@ $('#btn_data_barang').on('click', function(e){
             },
             error: function(xhr, status, error){
                 alert("error");
-                console.log(xhr);
+                var msg = $('.alert #alert_msg').empty();
+                var error = xhr.responseJSON;
+
+                // Menampilkan pesan error dari json response error
+                $.each(error.errors, function(key, value){
+                    msg.append("<li>"+ value[0] +"</li>");
+                });
+                $('#alert').show();
             },
             complete: function(){
                 alert("complete");
@@ -442,6 +456,19 @@ $('#btn_data_barang').on('click', function(e){
 
 
 // PROSES PERHITUNGAN BAYAR //
+
+    function hitung_bayar_kembali(){
+        var total_harga = $('#total_harga').val(),
+            bayar = $('#bayar').val(),
+            kembali = Number(total_harga) - Number(bayar);
+        $('#kembali').val(kembali);
+    }
+
+    $('#bayar').on('keyup keypress blur change', function(e){
+        hitung_bayar_kembali();
+    })
+
+
     function hitung_total_sub_diskon(){
         // Loop From Table
         var tabel = $('#tabel_barang > tbody > tr');

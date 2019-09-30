@@ -8,6 +8,7 @@ class DetailPenjualan extends Model
 {
 
     protected $table = "detail_penjualan";
+    public $incrementing = false;
 
     /**
      * The attributes that are mass assignable.
