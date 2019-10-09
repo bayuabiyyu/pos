@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use DataTables;
 use App\Http\Requests\PenjualanRequest;
 use App\Model\Pelanggan;
 use App\Model\Barang;
@@ -106,7 +107,9 @@ class PenjualanController extends Controller
      */
     public function show($id)
     {
-        //
+        $data['header'] = $this->penjualan->getPenjualanByID($id);
+        $data['detail'] = $this->detail_penjualan->getDetailPenjualanByID($id);
+        return view('admin.transaksi.penjualan.show', compact('data'));
     }
 
     /**
@@ -141,6 +144,19 @@ class PenjualanController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function dataTable(){
+        $data = $this->penjualan->getAllPenjualan();
+
+        return DataTables::of($data)
+                ->addIndexColumn()
+                ->addColumn('action', function($data){
+                    return '<a id="btn_show" title="Lihat Data" href="'.route('penjualan.show', $data->kode_transaksi).'"> <i class="fa fa-search"></i> </a> |
+                    <a id="btn_delete" title="Hapus Data" href="'. route('penjualan.destroy', $data->kode_transaksi).'"> <i class="fa fa-trash"></i> </a>';
+                })
+                ->rawColumns(['action'])
+                ->make(true);
     }
 
     public function dataBarang(){

@@ -184,7 +184,7 @@
               <!-- /.box-body -->
               <div class="box-footer">
                 <button type="reset" class="btn btn-danger"><span class="fa fa-eraser"></span> RESET</button>
-                <button type="submit" class="btn btn-primary pull-right"> <span class="fa fa-money"></span> BAYAR</button>
+                <button id="btn_bayar" type="submit" class="btn btn-primary pull-right"> <span class="fa fa-money"></span> BAYAR & CETAK INVOICE</button>
               </div>
               <!-- /.box-footer -->
                 </div>
@@ -370,14 +370,14 @@ $('#btn_data_barang').on('click', function(e){
                 },
                 error: function(xhr, err){
 
-                    // var msg = $('.alert #alert_msg').empty();
-                    // var error = xhr.responseJSON;
+                    var msg = $('.alert #alert_msg').empty();
+                    var error = xhr.responseJSON;
 
-                    // // Menampilkan pesan error dari json response error
-                    // $.each(error.errors, function(key, value){
-                    //     msg.append("<p>"+ value[0] +"</p>");
-                    // });
-                    // $('#alert').show();
+                    // Menampilkan pesan error dari json response error
+                    $.each(error.errors, function(key, value){
+                        msg.append("<p>"+ value[0] +"</p>");
+                    });
+                    $('#alert').show();
                 }
 
             })
@@ -423,14 +423,12 @@ $('#btn_data_barang').on('click', function(e){
             data: data,
             type: method,
             dataType: dataType,
-            // processData: false,
-            // contentType: false,
             beforeSend: function(){
-                alert("before send");
+                $('#btn_bayar').prop('disabled', true);
             },
             success: function(res){
                 alert("success");
-                console.log(res);
+                reset_invoice();
             },
             error: function(xhr, status, error){
                 alert("error");
@@ -445,6 +443,7 @@ $('#btn_data_barang').on('click', function(e){
             },
             complete: function(){
                 alert("complete");
+                $('#btn_bayar').prop('disabled', false);
             }
         });
 
@@ -454,13 +453,22 @@ $('#btn_data_barang').on('click', function(e){
 
 });
 
+// RESET FORM (TRANSAKSI BARU) //
+
+    function reset_invoice(){
+        window.location.reload();
+    }
+
+// END RESET FORM (TRANSAKSI BARU) //
+
+
 
 // PROSES PERHITUNGAN BAYAR //
 
     function hitung_bayar_kembali(){
         var total_harga = $('#total_harga').val(),
             bayar = $('#bayar').val(),
-            kembali = Number(total_harga) - Number(bayar);
+            kembali = Number(bayar) - Number(total_harga) ;
         $('#kembali').val(kembali);
     }
 
@@ -618,18 +626,17 @@ $('#btn_data_barang').on('click', function(e){
                     $('#diskon').val(0);
                     $('#qty').focus();
 
-
                 },
                 error: function(xhr, err){
 
-                    // var msg = $('.alert #alert_msg').empty();
-                    // var error = xhr.responseJSON;
+                    var msg = $('.alert #alert_msg').empty();
+                    var error = xhr.responseJSON;
 
-                    // // Menampilkan pesan error dari json response error
-                    // $.each(error.errors, function(key, value){
-                    //     msg.append("<p>"+ value[0] +"</p>");
-                    // });
-                    // $('#alert').show();
+                    // Menampilkan pesan error dari json response error
+                    $.each(error.errors, function(key, value){
+                        msg.append("<p>"+ value[0] +"</p>");
+                    });
+                    $('#alert').show();
                 }
 
             })

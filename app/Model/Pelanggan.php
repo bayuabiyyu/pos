@@ -18,4 +18,10 @@ class Pelanggan extends Model
     protected $fillable = [
         'kode_pelanggan', 'nama_pelanggan', 'no_telp', 'alamat'
     ];
+
+    public function penjualan()
+    {
+        return $this->belongsTo('App\Model\Penjualan', 'kode_pelanggan');
+    }
+
 }

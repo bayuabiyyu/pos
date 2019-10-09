@@ -66,7 +66,9 @@ Route::group(['prefix' => 'admin'], function () {
 
         // PENJUALAN
         Route::resource('penjualan', 'Admin\PenjualanController');
+        Route::get('penjualan/{id}', 'Admin\PenjualanController@show')->where('id', '.*'); // Overwrite from resource, untuk allow tanda slash di variabel paramter
         Route::post('penjualan/data_barang', 'Admin\PenjualanController@dataBarang')->name('penjualan.data_barang');
+        Route::post('penjualan/datatable', 'Admin\PenjualanController@dataTable')->name('penjualan.datatables');
         // PENJUALAN
 
     });

@@ -36,7 +36,7 @@
 
                 <div class="box">
                     <div class="box-header">
-                    <h3 class="box-title"> <button id="btn_tambah" class="btn bg-blue btn-flat"> <i class="fa fa-plus"></i> Tambah Data </button> </h3>
+                    <h3 class="box-title"> <button id="btn_refresh" class="btn bg-blue btn-flat"> <i class="fa fa-refresh"></i> Refresh Data </button> </h3>
                     </div>
                     <!-- /.box-header -->
                     <div class="box-body">
@@ -44,16 +44,13 @@
                             <table id="data" class="table table-bordered table-striped table-hover">
                                 <thead>
                                 <tr>
-                                <th>No.</th>
-                                <th>Kode Transaksi</th>
-                                <th>Tgl Transaksi</th>
-                                <th>Karyawan</th>
-                                <th>Pelanggan</th>
-                                <th>Total Harga</th>
-                                <th>Total Diskon</th>
-                                <th>DLL</th>
-                                <th>Bayar</th>
-                                <th>Kembali</th>
+                                    <th>No.</th>
+                                    <th>Kode Transaksi</th>
+                                    <th>Tgl Transaksi</th>
+                                    <th>Karyawan</th>
+                                    <th>Pelanggan</th>
+                                    <th>Total Harga</th>
+                                    <th>Action</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -105,9 +102,6 @@
 
 
 @push('javascript')
-    <!-- DataTables -->
-    <script src="{{ asset('assets/admin') }}/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
-    <script src="{{ asset('assets/admin') }}/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
 
     <script>
 
@@ -120,110 +114,31 @@ $.ajaxSetup({
     }
 });
 
-    // var table = $('#data').DataTable({
-    //     processing: true,
-    //     serverSide: true,
-    //     ajax: {
-    //         url: "{{ route('satuan.datatables') }}",
-    //         type: "POST"
-    //     },
-    //     columns: [
-    //         {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-    //         {data: 'kode_satuan', name: 'kode_satuan'},
-    //         {data: 'nama_satuan', name: 'nama_satuan'},
-    //         {data: 'action', name: 'action', orderable: false, searchable: false},
-    //     ]
-    // });
+    var table = $('#data').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: "{{ route('penjualan.datatables') }}",
+            type: "POST"
+        },
+        columns: [
+            {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+            {data: 'kode_transaksi', name: 'kode_transaksi'},
+            {data: 'tgl_transaksi', name: 'tgl_transaksi'},
+            {data: 'nama', name: 'nama'},
+            {data: 'nama_pelanggan', name: 'nama_pelanggan'},
+            {data: 'total_harga', name: 'total_harga'},
+            {data: 'action', name: 'action', orderable: false, searchable: false},
+        ]
+    });
 
 })
 
-    $('#btn_tambah').on('click', function(e){
+    $('#btn_refresh').on('click', function(e){
         e.preventDefault();
-        $('#modal .modal-title').html('TAMBAH DATA');
-        var url = "{{ route('satuan.create') }}",
-            method = "GET",
-            dataType = "HTML";
-
-        $.ajax({
-            url: url,
-            type: method,
-            dataType: dataType,
-            success: function(res){
-                $('.modal-body').html(res);
-                $('#modal').modal('show');
-            }
-        });
-
+        $('#data').DataTable().ajax.reload();
     });
 
-
-    $('#modal').on('submit', 'form', function(e){
-        e.preventDefault();
-        var me          = $(this),
-            url         = me.attr('action'),
-            method      = me.attr('method'),
-            dataType    = "JSON",
-            data        = me.serialize();
-
-        var result = confirm("Apakah anda yakin ingin submit data tersebut?");
-
-        if(result){
-
-            $.ajax({
-                url: url,
-                type: method,
-                dataType: dataType,
-                data: data,
-                beforeSend: function(res){
-
-                },
-                success: function(res){
-                    alert(res.msg);
-                    $('#alert').hide();
-                    if(res.status == true){
-                        $('#data').DataTable().ajax.reload();
-                        me.trigger('reset');
-                        $('#modal').modal('hide');
-                    }
-                },
-                error: function(xhr, err){
-
-                    var msg = $('.alert #alert_msg').empty();
-                    var error = xhr.responseJSON;
-
-                    // Menampilkan pesan error dari json response error
-                    $.each(error.errors, function(key, value){
-                        msg.append("<p>"+ value[0] +"</p>");
-                    });
-                    $('#alert').show();
-                }
-
-            })
-
-        }
-
-    });
-
-
-    $('#data').on('click', '#btn_edit', function(e){
-        e.preventDefault();
-        $('#modal .modal-title').html('EDIT DATA');
-        var me = $(this),
-            url = me.attr('href'),
-            method = "GET",
-            dataType = "HTML";
-
-        $.ajax({
-            url: url,
-            type: method,
-            dataType: dataType,
-            success: function(res){
-                $('.modal-body').html(res);
-                $('#modal').modal('show');
-            }
-        });
-
-    });
 
     $('#data').on('click', '#btn_delete', function(e){
         e.preventDefault();
