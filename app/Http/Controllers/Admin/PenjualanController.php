@@ -7,6 +7,7 @@ use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use DataTables;
+use PDF;
 use App\Http\Requests\PenjualanRequest;
 use App\Model\Pelanggan;
 use App\Model\Barang;
@@ -146,6 +147,10 @@ class PenjualanController extends Controller
         //
     }
 
+    /**
+     * Datatable
+     *  @return Format YajraDatatables
+     */
     public function dataTable(){
         $data = $this->penjualan->getAllPenjualan();
 
@@ -157,6 +162,22 @@ class PenjualanController extends Controller
                 })
                 ->rawColumns(['action'])
                 ->make(true);
+    }
+
+    /**
+     * Report invoice by kode transaksi
+     *
+     *  @return view dari show
+     *
+     */
+    public function reportInvoice($id){
+        $data['header'] = $this->penjualan->getPenjualanByID($id);
+        $data['detail'] = $this->detail_penjualan->getDetailPenjualanByID($id);
+
+        // $a = view('admin.transaksi.penjualan.report.invoice', compact('data'));
+
+        $pdf = PDF::loadView('admin.transaksi.penjualan.report.invoice', compact('data'));
+        return $pdf->download('invoice.pdf');
     }
 
     public function dataBarang(){
