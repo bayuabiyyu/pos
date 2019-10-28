@@ -2,8 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Pelanggan;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class PelangganRequest extends FormRequest
 {
@@ -53,10 +54,30 @@ class PelangganRequest extends FormRequest
 
     public function messages(){
         return [
-            'kode_pelanggan.required' => 'Kode pelanggan wajib diisi',
-            'nama_pelanggan.required' => 'Nama pelanggan wajib diisi',
-            'alamat.required' => 'Nama pelanggan wajib diisi',
-            'no_telp.required' => 'Nama pelanggan wajib diisi',
+            'required' => ':attribute tidak boleh kosong',
+            'unique' => ':attribute sudah ada, masukkan kode lain',
+            'max' => ':attribute panjang melebihi batas',
         ];
     }
+
+    public function attributes()
+    {
+        return [
+            'kode_pelanggan' => 'Kode Pelanggan',
+            'nama_pelanggan' => 'Nama Pelanggan',
+            'alamat' => 'Alamat',
+            'no_telp' => 'No. Telp',
+        ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        $response = [
+            'success' => false,
+            'error-code' => 422,
+            'errors' => $validator->errors()->all(),
+        ];
+        throw new HttpResponseException(response()->json($response, 422));
+    }
+
 }

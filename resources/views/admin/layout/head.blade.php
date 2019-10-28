@@ -31,6 +31,8 @@
     <link rel="stylesheet" href="{{ asset('assets/admin-lte') }}/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
     <!-- DataTables -->
     <link rel="stylesheet" href="{{ asset('assets/admin-lte') }}/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+    <!-- Toastr -->
+    <link rel="stylesheet" href="{{ asset('assets/admin-lte') }}/bower_components/toastr/build/toastr.min.css">
 
   @stack('css')
 

@@ -2,21 +2,23 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\PelangganRequest;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Model\Barang;
-use App\Model\Pelanggan;
-use DataTables;
+use App\Http\Requests\PelangganRequest;
+use App\Http\Services\PelangganService;
 
 class PelangganController extends Controller
 {
 
-    protected $pelanggan;
+    private $pelangganService;
 
-    public function __construct(Pelanggan $pelanggan)
+    /**
+     * Class init.
+     *
+     * @param Model class dll
+     */
+    public function __construct(PelangganService $pelangganService)
     {
-        $this->pelanggan = $pelanggan;
+        $this->pelangganService = $pelangganService;
     }
 
     /**
@@ -48,17 +50,14 @@ class PelangganController extends Controller
      */
     public function store(PelangganRequest $request)
     {
-        $data = [
-                    'kode_pelanggan' => $request->kode_pelanggan,
-                    'nama_pelanggan' => $request->nama_pelanggan,
-                    'alamat' => $request->nama_pelanggan,
-                    'no_telp' => $request->nama_pelanggan,
-                ];
-
-        $create = $this->pelanggan->create($data);
-
-        $response['status'] = true;
-        $response['msg'] = "Data berhasil ditambahkan";
+        $create = $this->pelangganService->save($request);
+        if($create){
+            $response['success'] = true;
+            $response['message'] = "Data berhasil ditambahkan";
+        }else{
+            $response['success'] = false;
+            $response['message'] = "Data gagal ditambahkan";
+        }
         return response()->json($response);
     }
 
@@ -70,8 +69,7 @@ class PelangganController extends Controller
      */
     public function show($id)
     {
-        $data = $this->pelanggan->where('kode_pelanggan', $id)
-                ->first();
+        $data = $this->pelangganService->getByID($id);
         return view ('admin.master.pelanggan.show', compact('data'));
     }
 
@@ -83,8 +81,7 @@ class PelangganController extends Controller
      */
     public function edit($id)
     {
-        $data = $this->pelanggan->where('kode_pelanggan', $id)
-                            ->first();
+        $data = $this->pelangganService->getByID($id);
         return view('admin.master.pelanggan.form', compact('data'));
     }
 
@@ -97,17 +94,15 @@ class PelangganController extends Controller
      */
     public function update(PelangganRequest $request, $id)
     {
-
-        $update = $this->pelanggan->where('kode_pelanggan', $id)
-                    ->update([
-                        'nama_pelanggan' => $request->nama_pelanggan,
-                        'alamat' => $request->nama_pelanggan,
-                        'no_telp' => $request->nama_pelanggan,
-                    ]);
-
-        $response['status'] = true;
-        $response['msg'] = "Data berhasil diubah";
-        return response()->json($response);
+        $update = $this->pelangganService->update($id, $request);
+        if($update){
+            $response['success'] = true;
+            $response['message'] = "Data berhasil diubah";
+        }else{
+            $response['success'] = false;
+            $response['message'] = "Data gagal diubah";
+        }
+        return response()->json($response, 200);
     }
 
     /**
@@ -118,27 +113,25 @@ class PelangganController extends Controller
      */
     public function destroy($id)
     {
-
-        $delete = $this->pelanggan->where('kode_pelanggan', $id)
-                    ->delete();
-
-        $response['status'] = true;
-        $response['msg'] = "Data berhasil dihapus";
-        return response()->json($response);
-
+        $delete = $this->pelangganService->delete($id);
+        if($delete){
+            $response['success'] = true;
+            $response['message'] = "Data berhasil dihapus";
+        }else{
+            $response['success'] = false;
+            $response['message'] = "Data gagal dihapus";
+        }
+        return response()->json($response, 200);
     }
 
+    /**
+     * Show datatables yajra server side.
+     *
+     * @return Datatables make
+     */
     public function dataTable(){
-        $data = $this->pelanggan->select('*')->get();
-
-        return DataTables::of($data)
-                ->addIndexColumn()
-                ->addColumn('action', function($data){
-                    return '<a id="btn_show" title="Lihat Data" href="'.route('pelanggan.show', $data->kode_pelanggan).'"> <i class="fa fa-search"></i> </a> |
-                    <a id="btn_edit" title="Ubah Data" href="'.route('pelanggan.edit', $data->kode_pelanggan).'"> <i class="fa fa-edit"></i> </a> |
-                    <a id="btn_delete" title="Hapus Data" href="'. route('pelanggan.destroy', $data->kode_pelanggan).'"> <i class="fa fa-trash"></i> </a>';
-                })
-                ->make(true);
+        $dataTable = $this->pelangganService->dataTable();
+        return $dataTable;
     }
 
 }

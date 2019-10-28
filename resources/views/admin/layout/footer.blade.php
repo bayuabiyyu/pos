@@ -242,6 +242,8 @@
 <!-- DataTables -->
 <script src="{{ asset('assets/admin-lte') }}/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="{{ asset('assets/admin-lte') }}/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<!-- Toastr -->
+<script src="{{ asset('assets/admin-lte') }}/bower_components/toastr/build/toastr.min.js"></script>
 
 @stack('javascript')
 

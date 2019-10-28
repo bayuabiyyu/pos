@@ -22,20 +22,15 @@ Route::group(['prefix' => 'admin'], function () {
     // Route::post('login', 'Auth\LoginController@login')->name('login');
     Auth::routes();
 
-    Route::group(['middleware' => ['auth']], function () {
+Route::group(['middleware' => ['auth']], function () {
 
     Route::get('home', 'Admin\HomeController@index')->name('home');
 
-    // MASTER DATA ROUTE
+    // MASTER DATA
     Route::group(['prefix' => 'master'], function () {
-
         // BARANG
         Route::resource('barang', 'Admin\BarangController');
         Route::post('barang/datatable', 'Admin\BarangController@dataTable')->name('barang.datatables');
-        // Route::post('barang/{id}', [
-        //     'as' => 'barang.update',
-        //     'uses' => 'Admin\BarangController@update'
-        // ]);
         // END BARANG
 
         // KATEGORI
@@ -57,13 +52,11 @@ Route::group(['prefix' => 'admin'], function () {
         Route::resource('pelanggan', 'Admin\PelangganController');
         Route::post('pelanggan/datatable', 'Admin\PelangganController@dataTable')->name('pelanggan.datatables');
         // END SUPPLIER
-
     });
-    // END MASTER DATA ROUTE
+    // END MASTER DATA
 
-    // PENJUALAN ROUTE
+    // TRANSAKSI
     Route::group(['prefix' => 'transaksi'], function () {
-
         // PENJUALAN
         Route::get('penjualan/report/invoice/{id}', 'Admin\PenjualanController@reportInvoice')->where('id', '.*')->name('penjualan.report_invoice');
         Route::resource('penjualan', 'Admin\PenjualanController');
@@ -71,10 +64,9 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('penjualan/data_barang', 'Admin\PenjualanController@dataBarang')->name('penjualan.data_barang');
         Route::post('penjualan/datatable', 'Admin\PenjualanController@dataTable')->name('penjualan.datatables');
         // PENJUALAN
-
     });
-    // END PENJUALAN ROUTE
+    // END TRANSAKSI
 
-    });
+});
 
 });

@@ -4,16 +4,11 @@
     <div id="alert" class="alert alert-danger alert-dismissible" role="alert" style="display: none;">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
         <h4><i class="icon fa fa-ban"></i> Alert!</h4>
-    <div id="alert_msg"> Message </div>
+        <div id="alert_msg"> Message </div>
     </div>
 
     <div class="form-group">
         <label for="kode">Kode Pelanggan</label>
-        {{-- @if ( (isset$data->exists) )
-            <p class="form-control">{{ $data['pelanggan']->kode_pelanggan }}</p>
-        @else
-            <input type="text" class="form-control" id="kode_pelanggan" name="kode_pelanggan" placeholder="Masukkan Kode pelanggan" maxlength="128">
-        @endif --}}
         <input type="text" class="form-control" id="kode_pelanggan" name="kode_pelanggan" placeholder="Masukkan Kode pelanggan" maxlength="128" value="{{ $data->exists ? $data->kode_pelanggan : '' }}" {{ $data->exists ? 'readonly disabled' : '' }} >
     </div>
 
@@ -35,7 +30,7 @@
     <div class="text-center">
         <div class="form-group">
             <button id="btn_submit" type="submit" class="btn btn-primary">Submit</button>
-            <button type="reset" class="btn btn-danger">Reset</button>
+            <button id="btn_reset" type="reset" class="btn btn-danger">Reset</button>
         </div>
     </div>
 
