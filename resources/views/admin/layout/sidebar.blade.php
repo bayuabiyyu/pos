@@ -49,20 +49,31 @@
               <ul class="treeview-menu">
                 <li><a href="{{ route('penjualan.create') }}"><i class="fa fa-circle-o"></i> Transaksi Penjualan</a></li>
                 <li><a href="{{ route('penjualan.index') }}"><i class="fa fa-circle-o"></i> Data Penjualan</a></li>
-                <li class="treeview">
-                  <a href="#"><i class="fa fa-circle-o"></i> Level Two
-                    <span class="pull-right-container">
-                      <i class="fa fa-angle-left pull-right"></i>
-                    </span>
-                  </a>
-                  <ul class="treeview-menu">
-                    <li><a href="#"><i class="fa fa-circle-o"></i> Level Three</a></li>
-                    <li><a href="#"><i class="fa fa-circle-o"></i> Level Three</a></li>
-                  </ul>
-                </li>
               </ul>
             </li>
-            <li><a href="#"><i class="fa fa-circle-o"></i> Level One</a></li>
+            <li class="treeview">
+              <a href="#"><i class="fa fa-circle-o"></i> Stok Masuk
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+                <li><a href="{{ route('stokmasuk.create') }}"><i class="fa fa-circle-o"></i> Transaksi Stok Masuk</a></li>
+                <li><a href="{{ route('stokmasuk.index') }}"><i class="fa fa-circle-o"></i> Data Stok Masuk</a></li>
+              </ul>
+            </li>
+             <li class="treeview">
+              <a href="#"><i class="fa fa-circle-o"></i> Stok Keluar
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+                <li><a href="{{ route('stokkeluar.create') }}"><i class="fa fa-circle-o"></i> Transaksi Stok Keluar</a></li>
+                <li><a href="{{ route('stokkeluar.index') }}"><i class="fa fa-circle-o"></i> Data Stok Keluar</a></li>
+              </ul>
+            </li>
+            <li><a href="#"><i class="fa fa-circle-o"></i> Stom Opname</a></li>
           </ul>
         </li>
         <li><a href="https://adminlte.io/docs"><i class="fa fa-book"></i> <span>Documentation</span></a></li>

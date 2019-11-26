@@ -14,7 +14,7 @@
                       <div class="col-xs-12">
                         <h2 class="page-header">
                           <i class="fa fa-money"></i> INVOICE TRANSAKSI PENJUALAN
-                          <small class="pull-right">Tanggal : {{ $data['header']->tgl_transaksi }}</small>
+                          <small class="pull-right">Tanggal : {{ date('d-m-Y', strtotime($data['header']->tgl_transaksi)) }}</small>
                         </h2>
                       </div>
                       <!-- /.col -->

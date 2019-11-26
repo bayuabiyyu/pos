@@ -167,12 +167,16 @@ $.ajaxSetup({
                 dataType: dataType,
                 data: data,
                 beforeSend: function(res){
-
+                    $('#modal #btn_submit').attr('disabled', true);
+                    $('#modal #btn_reset').attr('disabled', true);
                 },
                 success: function(res){
-                    alert(res.msg);
+                    // ALERT TOAST
+                    toastr.options.positionClass = 'toast-bottom-right';
+                    toastr.success(res.message);
+
                     $('#alert').hide();
-                    if(res.status == true){
+                    if(res.success == true){
                         $('#data').DataTable().ajax.reload();
                         me.trigger('reset');
                         $('#modal').modal('hide');
@@ -181,13 +185,17 @@ $.ajaxSetup({
                 error: function(xhr, err){
 
                     var msg = $('.alert #alert_msg').empty();
-                    var error = xhr.responseJSON;
-
+                    var errors = xhr.responseJSON.errors;
                     // Menampilkan pesan error dari json response error
-                    $.each(error.errors, function(key, value){
-                        msg.append("<p>"+ value[0] +"</p>");
+                    $.each(errors, function(key, value){
+                        msg.append("<li>"+ value +"</li>");
                     });
+
                     $('#alert').show();
+                },
+                complete: function(res){
+                    $('#modal #btn_submit').removeAttr('disabled');
+                    $('#modal #btn_reset').removeAttr('disabled');
                 }
 
             })
@@ -233,17 +241,22 @@ $.ajaxSetup({
                 type: method,
                 dataType: dataType,
                 beforeSend: function(res){
-                    alert('beforesend');
+
                 },
                 success: function(res){
-                    alert(res.msg);
-                    if(res.status == true){
+                    // ALERT TOAST
+                    toastr.options.positionClass = 'toast-bottom-right';
+                    toastr.success(res.message);
+                    if(res.success == true){
                         $('#data').DataTable().ajax.reload();
                         me.trigger('reset');
                     }
                 },
                 error: function(xhr, err){
                     alert('error');
+                },
+                complete: function(res){
+
                 }
 
             });

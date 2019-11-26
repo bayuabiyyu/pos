@@ -52,9 +52,9 @@ class LoginController extends Controller
     // check if authenticated, then redirect to home admin
     protected function authenticated() {
         if (Auth::user()) {
-            return redirect()->route('home');
+            return redirect()->intended(route('home'));
         }else{
-            return redirect()->route('login');
+            return redirect()->intended(route('login'));
         }
     }
 

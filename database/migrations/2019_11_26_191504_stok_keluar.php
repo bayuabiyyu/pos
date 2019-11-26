@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableDetailPenjualan extends Migration
+class StokKeluar extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,12 @@ class CreateTableDetailPenjualan extends Migration
      */
     public function up()
     {
-        Schema::create('detail_penjualan', function (Blueprint $table) {
-            $table->string('kode_transaksi');
+        Schema::create('stok_keluar', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->dateTime('tanggal');
             $table->string('kode_barang');
-            $table->double('harga');
-            $table->double('qty');
-            $table->double('diskon');
-            $table->double  ('sub_total');
+            $table->string('qty');
+            $table->string('keterangan');
             $table->timestamps();
         });
     }
@@ -31,6 +30,6 @@ class CreateTableDetailPenjualan extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('detail_penjualan');
+        Schema::dropIfExists('stok_keluar');
     }
 }

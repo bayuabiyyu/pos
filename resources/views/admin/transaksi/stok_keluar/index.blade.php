@@ -2,7 +2,7 @@
 @extends('admin.layout.app')
 
 @section('title')
-    Kategori
+    Stok Keluar
 @endsection
 
 @push('css')
@@ -16,11 +16,11 @@
         <section class="content-header">
           <h1>
             MASTER
-            <small>Data Kategori</small>
+            <small>Data Stok Keluar</small>
           </h1>
           <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-file"></i> Master</a></li>
-            <li><a href="#">Data Kategori</a></li>
+            <li><a href="#">Data Stok Keluar</a></li>
           </ol>
         </section>
 
@@ -31,17 +31,19 @@
 
               <div class="box">
                 <div class="box-header">
-                  <h3 class="box-title"> <button id="btn_tambah" class="btn bg-blue btn-flat"> <i class="fa fa-plus"></i> Tambah Data </button> </h3>
+                    {{-- alert --}}
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
                     <div class="table-responsive">
-                        <table id="data" class="table table-bordered table-striped table-hover">
+                        <table id="data" class="table table-bordered table-striped table-hover" style="width:100%">
                             <thead>
                             <tr>
                             <th>No.</th>
-                            <th>Kode Kategori</th>
-                            <th>Nama Kategori</th>
+                            <th>Tanggal</th>
+                            <th>Barang</th>
+                            <th>Qty</th>
+                            <th>Keterangan</th>
                             <th>Action</th>
                             </tr>
                             </thead>
@@ -108,117 +110,23 @@ $.ajaxSetup({
     var table = $('#data').DataTable({
         processing: true,
         serverSide: true,
+        order: [],
         ajax: {
-            url: "{{ route('kategori.datatables') }}",
+            url: "{{ route('stokkeluar.datatables') }}",
             type: "POST"
         },
         columns: [
             {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-            {data: 'kode_kategori', name: 'kode_kategori'},
-            {data: 'nama_kategori', name: 'nama_kategori'},
+            {data: 'tanggal', name: 'tanggal'},
+            {data: 'nama_barang', name: 'nama_barang'},
+            {data: 'qty', name: 'qty'},
+            {data: 'keterangan', name: 'keterangan'},
             {data: 'action', name: 'action', orderable: false, searchable: false},
         ]
     });
 
 
-
 })
-
-
-    $('#btn_tambah').on('click', function(e){
-        e.preventDefault();
-        $('#modal .modal-title').html('TAMBAH DATA');
-        var url = "{{ route('kategori.create') }}",
-            method = "GET",
-            dataType = "HTML";
-
-        $.ajax({
-            url: url,
-            type: method,
-            dataType: dataType,
-            success: function(res){
-                $('.modal-body').html(res);
-                $('#modal').modal('show');
-            }
-        });
-
-    });
-
-
-    $('#modal').on('submit', 'form', function(e){
-        e.preventDefault();
-        var me          = $(this),
-            url         = me.attr('action'),
-            method      = me.attr('method'),
-            dataType    = "JSON",
-            data        = me.serialize();
-
-        var result = confirm("Apakah anda yakin ingin submit data tersebut?");
-
-        if(result){
-
-            $.ajax({
-                url: url,
-                type: method,
-                dataType: dataType,
-                data: data,
-                beforeSend: function(res){
-                    $('#modal #btn_submit').attr('disabled', true);
-                    $('#modal #btn_reset').attr('disabled', true);
-                },
-                success: function(res){
-                    // ALERT TOAST
-                    toastr.options.positionClass = 'toast-bottom-right';
-                    toastr.success(res.message);
-
-                    $('#alert').hide();
-                    if(res.success == true){
-                        $('#data').DataTable().ajax.reload();
-                        me.trigger('reset');
-                        $('#modal').modal('hide');
-                    }
-                },
-                error: function(xhr, err){
-
-                    var msg = $('.alert #alert_msg').empty();
-                    var errors = xhr.responseJSON.errors;
-                    // Menampilkan pesan error dari json response error
-                    $.each(errors, function(key, value){
-                        msg.append("<li>"+ value +"</li>");
-                    });
-
-                    $('#alert').show();
-                },
-                complete: function(res){
-                    $('#modal #btn_submit').removeAttr('disabled');
-                    $('#modal #btn_reset').removeAttr('disabled');
-                }
-            })
-
-        }
-
-    });
-
-
-    $('#data').on('click', '#btn_edit', function(e){
-        e.preventDefault();
-        $('#modal .modal-title').html('EDIT DATA');
-        var me = $(this),
-            url = me.attr('href'),
-            method = "GET",
-            dataType = "HTML";
-
-        $.ajax({
-            url: url,
-            type: method,
-            dataType: dataType,
-            success: function(res){
-                $('.modal-body').html(res);
-                $('#modal').modal('show');
-            }
-        });
-
-    });
 
     $('#data').on('click', '#btn_delete', function(e){
         e.preventDefault();
@@ -244,7 +152,6 @@ $.ajaxSetup({
                     toastr.success(res.message);
                     if(res.success == true){
                         $('#data').DataTable().ajax.reload();
-                        me.trigger('reset');
                     }
                 },
                 error: function(xhr, err){
@@ -256,27 +163,6 @@ $.ajaxSetup({
 
             });
         }
-    });
-
-
-    $('#data').on('click', '#btn_show', function(e){
-        e.preventDefault();
-        $('#modal .modal-title').html('SHOW DATA');
-        var me = $(this),
-            url = me.attr('href'),
-            method = "GET",
-            dataType = "HTML";
-
-        $.ajax({
-            url: url,
-            type: method,
-            dataType: dataType,
-            success: function(res){
-                $('.modal-body').html(res);
-                $('#modal').modal('show');
-            }
-        });
-
     });
 
     </script>

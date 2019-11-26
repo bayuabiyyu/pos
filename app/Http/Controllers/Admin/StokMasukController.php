@@ -3,18 +3,21 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\SatuanRequest;
-use App\Http\Services\SatuanService;
-use App\Model\Satuan;
+use Illuminate\Http\Request;
+use App\Http\Requests\StokMasukRequest;
+use App\Http\Services\StokMasukService;
+use App\Http\Services\SupplierService;
+use App\Model\StokMasuk;
 
-class SatuanController extends Controller
+class StokMasukController extends Controller
 {
 
-    protected $satuanService;
+    protected $stokMasukService, $supplierService;
 
-    public function __construct(SatuanService $satuanService)
+    public function __construct(StokMasukService $stokMasukService, SupplierService $supplierService)
     {
-        $this->satuanService = $satuanService;
+        $this->stokMasukService = $stokMasukService;
+        $this->supplierService = $supplierService;
     }
 
     /**
@@ -24,7 +27,7 @@ class SatuanController extends Controller
      */
     public function index()
     {
-        return view('admin.master.satuan.index');
+        return view('admin.transaksi.stok_masuk.index');
     }
 
     /**
@@ -34,8 +37,9 @@ class SatuanController extends Controller
      */
     public function create()
     {
-        $data = new Satuan();
-        return view('admin.master.satuan.form', compact('data'));
+        $data['stok_masuk'] = new StokMasuk();
+        $data['supplier'] = $this->supplierService->getAll();
+        return view('admin.transaksi.stok_masuk.form', compact('data'));
     }
 
     /**
@@ -44,18 +48,16 @@ class SatuanController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(SatuanRequest $request)
+    public function store(StokMasukRequest $request)
     {
-
-        $create = $this->satuanService->save($request);
-        if($create){
+        try {
+            $this->stokMasukService->save($request);
             $response['success'] = true;
             $response['message'] = "Data berhasil ditambahkan";
-        }else{
+        } catch (\Exception $e) {
             $response['success'] = false;
-            $response['message'] = "Data gagal ditambahkan";
+            $response['message'] = $e->getMessage();
         }
-
         return response()->json($response);
     }
 
@@ -67,8 +69,8 @@ class SatuanController extends Controller
      */
     public function show($id)
     {
-        $data = $this->satuanService->getByID($id);
-        return view ('admin.master.satuan.show', compact('data'));
+        $data = $this->stokMasukService->getByID($id);
+        return view ('admin.transaksi.stok_masuk.show', compact('data'));
     }
 
     /**
@@ -79,8 +81,9 @@ class SatuanController extends Controller
      */
     public function edit($id)
     {
-        $data = $this->satuanService->getByID($id);
-        return view('admin.master.satuan.form', compact('data'));
+        $data['stok_masuk'] = $this->stokMasukService->getByID($id);
+        $data['supplier'] = $this->supplierService->getAll();
+        return view('admin.transaksi.stok_masuk.form', compact('data'));
     }
 
     /**
@@ -90,18 +93,17 @@ class SatuanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(SatuanRequest $request, $id)
+    public function update(StokMasukRequest $request, $id)
     {
-
-        $update = $this->satuanService->update($id, $request);
-        if($update){
+        try {
+            $this->stokMasukService->update($id, $request);
             $response['success'] = true;
             $response['message'] = "Data berhasil diubah";
-        }else{
+        } catch (\Exception $e) {
             $response['success'] = false;
-            $response['message'] = "Data gagal diubah";
+            $response['message'] = $e->getMessage();
         }
-        return response()->json($response, 200);
+        return response()->json($response);
     }
 
     /**
@@ -112,22 +114,25 @@ class SatuanController extends Controller
      */
     public function destroy($id)
     {
-
-        $delete = $this->satuanService->delete($id);
-        if($delete){
+        try {
+            $this->stokMasukService->delete($id);
             $response['success'] = true;
             $response['message'] = "Data berhasil dihapus";
-        }else{
+        } catch (\Exception $e) {
             $response['success'] = false;
-            $response['message'] = "Data gagal dihapus";
+            $response['message'] = $e->getMessage();
         }
-        return response()->json($response, 200);
+        return response()->json($response);
 
     }
 
     public function dataTable(){
-        $dataTable = $this->satuanService->dataTable();
+        $dataTable = $this->stokMasukService->dataTable();
         return $dataTable;
+    }
+
+    public function dataBarang(){
+        return view('admin.transaksi.stok_masuk.data_barang');
     }
 
 }

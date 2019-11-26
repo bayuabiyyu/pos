@@ -229,6 +229,8 @@
 <script src="{{ asset('assets/admin-lte') }}/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
 <!-- Bootstrap WYSIHTML5 -->
 <script src="{{ asset('assets/admin-lte') }}/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+<!-- bootstrap time picker -->
+<script src="{{ asset('assets/admin-lte') }}/plugins/timepicker/bootstrap-timepicker.min.js"></script>
 <!-- Slimscroll -->
 <script src="{{ asset('assets/admin-lte') }}/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
 <!-- FastClick -->

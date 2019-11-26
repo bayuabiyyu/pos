@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PelangganRequest;
 use App\Http\Services\PelangganService;
+use App\Model\Pelanggan;
 
 class PelangganController extends Controller
 {
@@ -38,7 +39,7 @@ class PelangganController extends Controller
      */
     public function create()
     {
-        $data = new pelanggan();
+        $data = new Pelanggan;
         return view('admin.master.pelanggan.form', compact('data'));
     }
 

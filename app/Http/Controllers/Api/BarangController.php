@@ -2,26 +2,24 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BarangRequest;
+use App\Http\Services\BarangService;
+use App\Http\Services\KategoriService;
+use App\Http\Services\SatuanService;
 use App\Model\Barang;
-use App\Model\Kategori;
-use App\Model\Satuan;
 use DataTables;
 
 class BarangController extends Controller
 {
 
-    protected $barang, $kategori, $satuan;
+    protected $barangService, $kategoriService, $satuanService;
 
-    public function __construct(Barang $barang, Kategori $kategori, Satuan $satuan)
+    public function __construct(BarangService $barangService, KategoriService $kategoriService, SatuanService $satuanService)
     {
-        $this->barang = $barang;
-        $this->kategori = $kategori;
-        $this->satuan = $satuan;
+        $this->barangService = $barangService;
+        $this->kategoriService = $kategoriService;
+        $this->satuanService = $satuanService;
     }
 
     /**
@@ -31,7 +29,7 @@ class BarangController extends Controller
      */
     public function index()
     {
-        $response['data'] = $this->barang->getAllBarang();
+        $response['data'] = $this->barangService->getAll();
         return response()->json($response);
     }
 
@@ -64,7 +62,7 @@ class BarangController extends Controller
      */
     public function show($id)
     {
-        $response['data'] = $this->barang->getBarangByKode($id);
+        $response['data'] = $this->kategoriService->getbyID($id);
         return response()->json($response);
     }
 
@@ -103,7 +101,7 @@ class BarangController extends Controller
     }
 
     public function dataBarang(){
-        $data = $this->barang->getAllBarang();
+        $data = $this->barangService->getAll();
         return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('image', function($data){

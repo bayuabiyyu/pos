@@ -69,6 +69,9 @@
                         <div class="col-sm-5">
                             <input type="text" class="form-control" id="tanggal" name="tanggal" placeholder="Tanggal">
                         </div>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="waktu" name="waktu" placeholder="Waktu">
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -83,11 +86,11 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="" class="col-sm-3 control-label">Jenis Pembayaran</label>
+                        <label for="" class="col-sm-3 control-label">Pembayaran</label>
                         <div class="col-sm-5">
                             <select class="form-control" name="jenis_pembayaran" id="jenis_pembayaran">
-                                <option value="transfer">Transfer</option>
                                 <option value="cash">Cash</option>
+                                <option value="transfer">Transfer</option>
                             </select>
                         </div>
                     </div>
@@ -129,9 +132,9 @@
               <div class="box-body">
 
                 <div class="form-group">
-                  <label for="" class="col-sm-3 control-label">Total Sub. Total</label>
+                  <label for="" class="col-sm-3 control-label">Total</label>
                   <div class="col-sm-5">
-                    <input type="number" class="form-control" id="total_sub_total" name="total_sub_total" placeholder="Total Sub. Total" value="0" readonly>
+                    <input type="number" class="form-control" id="total" name="total" placeholder="Total" value="0" readonly>
                   </div>
                 </div>
 
@@ -143,9 +146,13 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="" class="col-sm-3 control-label">PPN (%)</label>
+                    <label for="" class="col-sm-3 control-label">Pajak (%)</label>
                     <div class="col-sm-2">
                         <input type="number" class="form-control" id="pajak" name="pajak" placeholder="PPN" value="0">
+                    </div>
+                    <label for="" class="col-sm-1 control-label">Rp.</label>
+                    <div class="col-sm-4">
+                        <input type="number" class="form-control" id="pajak_rp" name="pajak_rp" placeholder="PPN RP" value="0" readonly>
                     </div>
 
                 </div>
@@ -160,7 +167,7 @@
                 <div class="form-group">
                     <label for="" class="col-sm-3 control-label">Total Harga</label>
                     <div class="col-sm-5">
-                        <input type="number" class="form-control" id="total_harga" name="total_harga" placeholder="Total Harga" value="0" readonly>
+                        <input type="number" class="form-control" id="grand_total" name="grand_total" placeholder="Total Harga" value="0" readonly>
                     </div>
                 </div>
 
@@ -283,15 +290,13 @@
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span></button>
-              <h4 class="modal-title text-center">Modal</h4>
+              <h4 class="modal-title text-center">Data Barang</h4>
             </div>
             <div class="modal-body">
               <p>One fine body&hellip;</p>
             </div>
             <div class="modal-footer">
-              {{-- <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Save changes</button> --}}
-              {{-- <p class="text-left">Catatan : Harap memasukkan data dengan benar</p> --}}
+              <p class="text-left">Catatan : Double Click Pada Baris Barang Yang Akan Dipilih</p>
             </div>
           </div>
           <!-- /.modal-content -->
@@ -326,6 +331,10 @@ $('#tanggal').datepicker({
     todayHighlight: true,
     autoclose: true
 }).datepicker("setDate",'now');
+//Timepicker
+$('#waktu').timepicker({
+    maxHours: 24,
+})
 // END INIT DATEPICKER //
 
 
@@ -466,9 +475,9 @@ $('#btn_data_barang').on('click', function(e){
 // PROSES PERHITUNGAN BAYAR //
 
     function hitung_bayar_kembali(){
-        var total_harga = $('#total_harga').val(),
+        var grand_total = $('#grand_total').val(),
             bayar = $('#bayar').val(),
-            kembali = Number(bayar) - Number(total_harga) ;
+            kembali = Number(bayar) - Number(grand_total) ;
         $('#kembali').val(kembali);
     }
 
@@ -480,40 +489,40 @@ $('#btn_data_barang').on('click', function(e){
     function hitung_total_sub_diskon(){
         // Loop From Table
         var tabel = $('#tabel_barang > tbody > tr');
-        var total_sub_total = 0,
+        var total = 0,
             total_diskon = 0;
 
         tabel.each(function(){
             var sub_total = $(this).find('td:eq(5)').text();
                 diskon = $(this).find('td:eq(4)').text();
 
-            total_sub_total += Number(sub_total);
+            total += Number(sub_total);
             total_diskon += Number(diskon);
 
         });
 
-        $('#total_sub_total').val(total_sub_total);
+        $('#total').val(total);
         $('#total_diskon').val(total_diskon);
 
-        hitung_total_harga();
+        hitung_grand_total();
 
     }
 
 
-    function hitung_total_harga(){
+    function hitung_grand_total(){
 
-        var total_sub_total = $('#total_sub_total').val(),
+        var total = $('#total').val(),
             total_diskon = $('#total_diskon').val(),
             pajak = $('#pajak').val(),
             dll = $('#dll').val();
 
-        var total_harga = Number(total_sub_total) - Number(total_diskon) + ( Number(total_sub_total) * Number(pajak) / 100 ) + Number(dll);
-        $('#total_harga').val(total_harga);
+        var grand_total = Number(total) - Number(total_diskon) + ( Number(total) * Number(pajak) / 100 ) + Number(dll);
+        $('#grand_total').val(grand_total);
 
     }
 
-    $('#total_sub_total, #total_diskon, #pajak, #dll').on('keyup keypress blur change', function(e){
-        hitung_total_harga();
+    $('#total, #total_diskon, #pajak, #dll').on('keyup keypress blur change', function(e){
+        hitung_grand_total();
     })
 
     function hitung_sub_total(){

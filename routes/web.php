@@ -31,6 +31,7 @@ Route::group(['middleware' => ['auth']], function () {
         // BARANG
         Route::resource('barang', 'Admin\BarangController');
         Route::post('barang/datatable', 'Admin\BarangController@dataTable')->name('barang.datatables');
+        Route::post('barang/getall', 'Admin\BarangController@getAllBarang')->name('barang.getall');
         // END BARANG
 
         // KATEGORI
@@ -48,10 +49,10 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('supplier/datatable', 'Admin\SupplierController@dataTable')->name('supplier.datatables');
         // END SUPPLIER
 
-        // SUPPLIER
+        // PELANGGAN
         Route::resource('pelanggan', 'Admin\PelangganController');
         Route::post('pelanggan/datatable', 'Admin\PelangganController@dataTable')->name('pelanggan.datatables');
-        // END SUPPLIER
+        // END PELANGGAN
     });
     // END MASTER DATA
 
@@ -64,6 +65,20 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('penjualan/data_barang', 'Admin\PenjualanController@dataBarang')->name('penjualan.data_barang');
         Route::post('penjualan/datatable', 'Admin\PenjualanController@dataTable')->name('penjualan.datatables');
         // PENJUALAN
+
+        // STOK MASUK
+        Route::resource('stokmasuk', 'Admin\StokMasukController');
+        Route::post('stokmasuk/datatable', 'Admin\StokMasukController@dataTable')->name('stokmasuk.datatables');
+        Route::post('stokmasuk/databarang', 'Admin\StokMasukController@dataBarang')->name('stokmasuk.data_barang');
+        // END STOK MASUK
+
+        // STOK KELUAR
+        Route::resource('stokkeluar', 'Admin\StokKeluarController');
+        Route::post('stokkeluar/datatable', 'Admin\StokKeluarController@dataTable')->name('stokkeluar.datatables');
+        Route::post('stokkeluar/databarang', 'Admin\StokKeluarController@dataBarang')->name('stokkeluar.data_barang');
+        // END STOK KELUAR
+
+
     });
     // END TRANSAKSI
 

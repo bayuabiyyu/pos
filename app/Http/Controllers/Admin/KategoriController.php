@@ -2,22 +2,19 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\KategoriRequest;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Model\Barang;
+use App\Http\Requests\KategoriRequest;
+use App\Http\Services\KategoriService;
 use App\Model\Kategori;
-use DataTables;
 
-class KategoriController extends Controller
+class kategoriController extends Controller
 {
 
-    protected $barang, $kategori;
+    protected $kategoriService;
 
-    public function __construct(Barang $barang, Kategori $kategori)
+    public function __construct(KategoriService $kategoriService)
     {
-        $this->barang = $barang;
-        $this->kategori = $kategori;
+        $this->kategoriService = $kategoriService;
     }
 
     /**
@@ -37,7 +34,7 @@ class KategoriController extends Controller
      */
     public function create()
     {
-        $data = new Kategori();
+        $data = new kategori();
         return view('admin.master.kategori.form', compact('data'));
     }
 
@@ -49,15 +46,16 @@ class KategoriController extends Controller
      */
     public function store(KategoriRequest $request)
     {
-        $data = [
-                    'kode_kategori' => $request->kode_kategori,
-                    'nama_kategori' => $request->nama_kategori,
-                ];
 
-        $create = $this->kategori->create($data);
+        $create = $this->kategoriService->save($request);
+        if($create){
+            $response['success'] = true;
+            $response['message'] = "Data berhasil ditambahkan";
+        }else{
+            $response['success'] = false;
+            $response['message'] = "Data gagal ditambahkan";
+        }
 
-        $response['status'] = true;
-        $response['msg'] = "Data berhasil ditambahkan";
         return response()->json($response);
     }
 
@@ -69,8 +67,7 @@ class KategoriController extends Controller
      */
     public function show($id)
     {
-        $data = $this->kategori->where('kode_kategori', $id)
-                ->first();
+        $data = $this->kategoriService->getByID($id);
         return view ('admin.master.kategori.show', compact('data'));
     }
 
@@ -82,8 +79,7 @@ class KategoriController extends Controller
      */
     public function edit($id)
     {
-        $data = $this->kategori->where('kode_kategori', $id)
-                            ->first();
+        $data = $this->kategoriService->getByID($id);
         return view('admin.master.kategori.form', compact('data'));
     }
 
@@ -97,14 +93,15 @@ class KategoriController extends Controller
     public function update(KategoriRequest $request, $id)
     {
 
-        $update = $this->kategori->where('kode_kategori', $id)
-                    ->update([
-                        'nama_kategori' => $request->nama_kategori,
-                    ]);
-
-        $response['status'] = true;
-        $response['msg'] = "Data berhasil diubah";
-        return response()->json($response);
+        $update = $this->kategoriService->update($id, $request);
+        if($update){
+            $response['success'] = true;
+            $response['message'] = "Data berhasil diubah";
+        }else{
+            $response['success'] = false;
+            $response['message'] = "Data gagal diubah";
+        }
+        return response()->json($response, 200);
     }
 
     /**
@@ -116,26 +113,21 @@ class KategoriController extends Controller
     public function destroy($id)
     {
 
-        $delete = $this->kategori->where('kode_kategori', $id)
-                    ->delete();
-
-        $response['status'] = true;
-        $response['msg'] = "Data berhasil dihapus";
-        return response()->json($response);
+        $delete = $this->kategoriService->delete($id);
+        if($delete){
+            $response['success'] = true;
+            $response['message'] = "Data berhasil dihapus";
+        }else{
+            $response['success'] = false;
+            $response['message'] = "Data gagal dihapus";
+        }
+        return response()->json($response, 200);
 
     }
 
     public function dataTable(){
-        $data = $this->kategori->select('*')->get();
-
-        return DataTables::of($data)
-                ->addIndexColumn()
-                ->addColumn('action', function($data){
-                    return '<a id="btn_show" title="Lihat Data" href="'.route('kategori.show', $data->kode_kategori).'"> <i class="fa fa-search"></i> </a> |
-                    <a id="btn_edit" title="Ubah Data" href="'.route('kategori.edit', $data->kode_kategori).'"> <i class="fa fa-edit"></i> </a> |
-                    <a id="btn_delete" title="Hapus Data" href="'. route('kategori.destroy', $data->kode_kategori).'"> <i class="fa fa-trash"></i> </a>';
-                })
-                ->make(true);
+        $dataTable = $this->kategoriService->dataTable();
+        return $dataTable;
     }
 
 }

@@ -2,8 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Satuan;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class SatuanRequest extends FormRequest
 {
@@ -49,8 +50,28 @@ class SatuanRequest extends FormRequest
 
     public function messages(){
         return [
-            'kode_satuan.required' => 'Kode satuan wajib diisi',
-            'nama_satuan.required' => 'Nama satuan wajib diisi',
+            'required' => ':attribute tidak boleh kosong',
+            'unique' => ':attribute sudah ada, masukkan kode lain',
+            'max' => ':attribute panjang melebihi batas',
         ];
     }
+
+    public function attributes()
+    {
+        return [
+            'kode_satuan' => 'Kode Satuan',
+            'nama_satuan' => 'Nama Satuan'
+        ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        $response = [
+            'success' => false,
+            'error-code' => 422,
+            'errors' => $validator->errors()->all(),
+        ];
+        throw new HttpResponseException(response()->json($response, 422));
+    }
+
 }

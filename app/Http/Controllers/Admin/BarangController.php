@@ -2,26 +2,24 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BarangRequest;
+use App\Http\Services\BarangService;
+use App\Http\Services\KategoriService;
+use App\Http\Services\SatuanService;
 use App\Model\Barang;
-use App\Model\Kategori;
-use App\Model\Satuan;
-use DataTables;
+
 
 class BarangController extends Controller
 {
 
-    protected $barang, $kategori, $satuan;
+    protected $barangService, $kategoriService, $satuanService;
 
-    public function __construct(Barang $barang, Kategori $kategori, Satuan $satuan)
+    public function __construct(BarangService $barangService, KategoriService $kategoriService, SatuanService $satuanService)
     {
-        $this->barang = $barang;
-        $this->kategori = $kategori;
-        $this->satuan = $satuan;
+        $this->barangService = $barangService;
+        $this->kategoriService = $kategoriService;
+        $this->satuanService = $satuanService;
     }
 
     /**
@@ -31,15 +29,6 @@ class BarangController extends Controller
      */
     public function index()
     {
-        // $data['barang'] = $this->barang->select('a.kode_barang', 'a.nama_barang', 'a.kode_kategori', 'b.nama_kategori')
-        //                     ->from('barang AS a')
-        //                     ->leftJoin('kategori AS b', 'a.kode_kategori', 'b.kode_kategori')
-        //                     // ->where('b.kode_kategori', '=', )
-        //                     ->get();
-        // // $data['kategori'] = $this->kategori->where('kode_kategori' , 1)->first()
-        // //                     ->barang->where('kode_barang', 'BRG001');
-
-
         return view('admin.master.barang.index');
     }
 
@@ -51,8 +40,8 @@ class BarangController extends Controller
     public function create()
     {
         $data['barang'] = new Barang();
-        $data['kategori'] = $this->kategori->get();
-        $data['satuan'] = $this->satuan->get();
+        $data['kategori'] = $this->kategoriService->getAll();
+        $data['satuan'] = $this->satuanService->getAll();
         return view('admin.master.barang.form', compact('data'));
     }
 
@@ -64,30 +53,15 @@ class BarangController extends Controller
      */
     public function store(BarangRequest $request)
     {
-
-        $foto = $request->file('foto');
-        // upload ke folder storage/app
-        $path_foto = $foto->store('public/foto_barang');
-
-        $data = [
-            'kode_barang' => $request->kode_barang,
-            'kode_kategori' => $request->kode_kategori,
-            'kode_satuan' => $request->kode_satuan,
-            'nama_barang' => $request->nama_barang,
-            'stok' => $request->stok,
-            'stok_min' => $request->stok_min,
-            'harga_beli' => $request->harga_beli,
-            'harga_jual' => $request->harga_jual,
-            'keterangan' => $request->keterangan,
-            'foto' => $path_foto,
-        ];
-
-        $create = $this->barang->create($data);
-
-        $response['status'] = true;
-        $response['msg'] = "Data berhasil ditambahkan";
+        $create = $this->barangService->save($request);
+        if($create){
+            $response['success'] = true;
+            $response['message'] = "Data berhasil ditambahkan";
+        }else{
+            $response['success'] = false;
+            $response['message'] = "Data gagal ditambahkan";
+        }
         return response()->json($response);
-
     }
 
     /**
@@ -98,7 +72,7 @@ class BarangController extends Controller
      */
     public function show($id)
     {
-        $data = $this->barang->getBarangByKode($id);
+        $data = $this->barangService->getByID($id);
         return view('admin.master.barang.show', compact('data'));
     }
 
@@ -110,10 +84,9 @@ class BarangController extends Controller
      */
     public function edit($id)
     {
-        $data['barang'] = $this->barang->where('kode_barang', $id)
-                            ->first();
-        $data['kategori'] = $this->kategori->get();
-        $data['satuan'] = $this->satuan->get();
+        $data['barang'] = $this->barangService->getByID($id);
+        $data['kategori'] = $this->kategoriService->getAll();
+        $data['satuan'] = $this->satuanService->getAll();
         return view('admin.master.barang.form', compact('data'));
     }
 
@@ -126,34 +99,14 @@ class BarangController extends Controller
      */
     public function update(BarangRequest $request, $id)
     {
-        $barang = $this->barang->where('kode_barang', $id);
-        $getBarang = $barang->first();
-
-        if($request->has('foto') && Storage::exists($getBarang->foto)){
-            if(Storage::delete($getBarang->foto)){
-                $foto = $request->file('foto');
-                $path_foto = $foto->store('public/foto_barang');
-            }
+        $update = $this->barangService->update($id, $request);
+        if($update){
+            $response['success'] = true;
+            $response['message'] = "Data berhasil diubah";
         }else{
-            $path_foto = $getBarang->foto;
+            $response['success'] = false;
+            $response['message'] = "Data gagal diubah";
         }
-
-        $data = [
-            'kode_kategori' => $request->kode_kategori,
-            'kode_satuan' => $request->kode_satuan,
-            'nama_barang' => $request->nama_barang,
-            'stok' => $request->stok,
-            'stok_min' => $request->stok_min,
-            'harga_beli' => $request->harga_beli,
-            'harga_jual' => $request->harga_jual,
-            'keterangan' => $request->keterangan,
-            'foto' => $path_foto,
-        ];
-
-        $update = $barang->update($data);
-
-        $response['status'] = true;
-        $response['msg'] = "Data berhasil diubah";
         return response()->json($response);
     }
 
@@ -165,38 +118,26 @@ class BarangController extends Controller
      */
     public function destroy($id)
     {
-        $barang = $this->barang->where('kode_barang', $id);
-        $getBarang = $barang->first();
-        $delete = $barang->delete();
-
+        $delete = $this->barangService->delete($id);
         if($delete){
-            if(Storage::exists($getBarang->foto)){
-                Storage::delete($getBarang->foto);
-            }
+            $response['success'] = true;
+            $response['message'] = "Data berhasil dihapus";
+        }else{
+            $response['success'] = false;
+            $response['message'] = "Data gagal dihapus";
         }
+        return response()->json($response, 200);
 
-        $response['status'] = true;
-        $response['msg'] = "Data berhasil dihapus";
-        return response()->json($response);
     }
 
-
     public function dataTable(){
-        $data = $this->barang->getAllBarang();
+        $dataTable = $this->barangService->dataTable();
+        return $dataTable;
+    }
 
-        return DataTables::of($data)
-                ->addIndexColumn()
-                ->addColumn('image', function($data){
-                    $path = Storage::url($data->foto);
-                    return Storage::exists($data->foto) ? '<img src="'. $path .'" height="42" width="42">' : '<span class="badge badge-info"> Foto tidak ditemukan </span>';
-                })
-                ->addColumn('action', function($data){
-                    return '<a id="btn_show" title="Lihat Data" href="'.route('barang.show', $data->kode_barang).'"> <i class="fa fa-search"></i> </a> |
-                    <a id="btn_edit" title="Ubah Data" href="'.route('barang.edit', $data->kode_barang).'"> <i class="fa fa-edit"></i> </a> |
-                    <a id="btn_delete" title="Hapus Data" href="'. route('barang.destroy', $data->kode_barang).'"> <i class="fa fa-trash"></i> </a>';
-                })
-                ->rawColumns(['image', 'action'])
-                ->make(true);
+    public function getAllBarang(){
+        $response['data'] = $this->barangService->getAll();
+        return response()->json($response);
     }
 
 }

@@ -2,21 +2,19 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\SupplierRequest;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Model\Barang;
+use App\Http\Requests\SupplierRequest;
+use App\Http\Services\SupplierService;
 use App\Model\Supplier;
-use DataTables;
 
 class SupplierController extends Controller
 {
 
-    protected $supplier;
+    protected $supplierService;
 
-    public function __construct(Supplier $supplier)
+    public function __construct(SupplierService $supplierService)
     {
-        $this->supplier = $supplier;
+        $this->supplierService = $supplierService;
     }
 
     /**
@@ -48,17 +46,16 @@ class SupplierController extends Controller
      */
     public function store(SupplierRequest $request)
     {
-        $data = [
-                    'kode_supplier' => $request->kode_supplier,
-                    'nama_supplier' => $request->nama_supplier,
-                    'alamat' => $request->nama_supplier,
-                    'no_telp' => $request->nama_supplier,
-                ];
 
-        $create = $this->supplier->create($data);
+        $create = $this->supplierService->save($request);
+        if($create){
+            $response['success'] = true;
+            $response['message'] = "Data berhasil ditambahkan";
+        }else{
+            $response['success'] = false;
+            $response['message'] = "Data gagal ditambahkan";
+        }
 
-        $response['status'] = true;
-        $response['msg'] = "Data berhasil ditambahkan";
         return response()->json($response);
     }
 
@@ -70,8 +67,7 @@ class SupplierController extends Controller
      */
     public function show($id)
     {
-        $data = $this->supplier->where('kode_supplier', $id)
-                ->first();
+        $data = $this->supplierService->getByID($id);
         return view ('admin.master.supplier.show', compact('data'));
     }
 
@@ -83,8 +79,7 @@ class SupplierController extends Controller
      */
     public function edit($id)
     {
-        $data = $this->supplier->where('kode_supplier', $id)
-                            ->first();
+        $data = $this->supplierService->getByID($id);
         return view('admin.master.supplier.form', compact('data'));
     }
 
@@ -98,16 +93,15 @@ class SupplierController extends Controller
     public function update(SupplierRequest $request, $id)
     {
 
-        $update = $this->supplier->where('kode_supplier', $id)
-                    ->update([
-                        'nama_supplier' => $request->nama_supplier,
-                        'alamat' => $request->nama_supplier,
-                        'no_telp' => $request->nama_supplier,
-                    ]);
-
-        $response['status'] = true;
-        $response['msg'] = "Data berhasil diubah";
-        return response()->json($response);
+        $update = $this->supplierService->update($id, $request);
+        if($update){
+            $response['success'] = true;
+            $response['message'] = "Data berhasil diubah";
+        }else{
+            $response['success'] = false;
+            $response['message'] = "Data gagal diubah";
+        }
+        return response()->json($response, 200);
     }
 
     /**
@@ -119,26 +113,21 @@ class SupplierController extends Controller
     public function destroy($id)
     {
 
-        $delete = $this->supplier->where('kode_supplier', $id)
-                    ->delete();
-
-        $response['status'] = true;
-        $response['msg'] = "Data berhasil dihapus";
-        return response()->json($response);
+        $delete = $this->supplierService->delete($id);
+        if($delete){
+            $response['success'] = true;
+            $response['message'] = "Data berhasil dihapus";
+        }else{
+            $response['success'] = false;
+            $response['message'] = "Data gagal dihapus";
+        }
+        return response()->json($response, 200);
 
     }
 
     public function dataTable(){
-        $data = $this->supplier->select('*')->get();
-
-        return DataTables::of($data)
-                ->addIndexColumn()
-                ->addColumn('action', function($data){
-                    return '<a id="btn_show" title="Lihat Data" href="'.route('supplier.show', $data->kode_supplier).'"> <i class="fa fa-search"></i> </a> |
-                    <a id="btn_edit" title="Ubah Data" href="'.route('supplier.edit', $data->kode_supplier).'"> <i class="fa fa-edit"></i> </a> |
-                    <a id="btn_delete" title="Hapus Data" href="'. route('supplier.destroy', $data->kode_supplier).'"> <i class="fa fa-trash"></i> </a>';
-                })
-                ->make(true);
+        $dataTable = $this->supplierService->dataTable();
+        return $dataTable;
     }
 
 }

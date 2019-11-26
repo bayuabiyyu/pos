@@ -2,8 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Kategori;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class KategoriRequest extends FormRequest
 {
@@ -49,8 +50,28 @@ class KategoriRequest extends FormRequest
 
     public function messages(){
         return [
-            'kode_kategori.required' => 'Kode kategori wajib diisi',
-            'nama_kategori.required' => 'Nama kategori wajib diisi',
+            'required' => ':attribute tidak boleh kosong',
+            'unique' => ':attribute sudah ada, masukkan kode lain',
+            'max' => ':attribute panjang melebihi batas',
         ];
     }
+
+    public function attributes()
+    {
+        return [
+            'kode_kategori' => 'Kode Kategori',
+            'nama_kategori' => 'Nama Kategori'
+        ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        $response = [
+            'success' => false,
+            'error-code' => 422,
+            'errors' => $validator->errors()->all(),
+        ];
+        throw new HttpResponseException(response()->json($response, 422));
+    }
+
 }

@@ -177,7 +177,7 @@ class PenjualanController extends Controller
         // $a = view('admin.transaksi.penjualan.report.invoice', compact('data'));
 
         $pdf = PDF::loadView('admin.transaksi.penjualan.report.invoice', compact('data'));
-        return $pdf->download('invoice.pdf');
+        return $pdf->stream('invoice_penjualan.pdf');
     }
 
     public function dataBarang(){
@@ -185,56 +185,9 @@ class PenjualanController extends Controller
     }
 
     public function getKodeInvoice(){
-        // PEMBUATAN KODE INVOICE //
-        $bulan = Carbon::now()->format('m');
-        $bulan_romawi = ["00" => "", "01" => "I", "02" => "II", "03" => "III", "04" => "IV", "05" => "V",
-                        "06" => "VI", "07" => "VII", "08" => "VIII", "09" => "IX", "10" => "X",
-                        "11" => "XI", "12" => "XII"];
-        $tahun = Carbon::now()->format('Y');
 
-        $penjualan = $this->penjualan->get();
-        $kode_transaksi = "INVC/PENJUALAN/".$bulan_romawi[$bulan]."/".$tahun."/";
-
-        if(!$penjualan){
-            $kode_transaksi .= 1;
-        }else{
-            $kode_transaksi .= count($penjualan) + 1;
-        }
-
-        // END PEMBUATAN KODE INVOICE //
-
-        return $kode_transaksi;
 
     }
 
-    public function fillDataStore($request){
-
-        // HEADER DATA //
-        $data['header']['kode_transaksi'] = $request->kode_transaksi;
-        $data['header']['user_id'] = $request->user;
-        $data['header']['tgl_transaksi'] = Carbon::parse($request->tanggal)->format('Y-m-d');
-        $data['header']['kode_pelanggan'] = $request->pelanggan;
-        $data['header']['jenis_pembayaran'] = $request->jenis_pembayaran;
-        $data['header']['keterangan'] = $request->keterangan;
-        $data['header']['total_sub_total'] = $request->total_sub_total;
-        $data['header']['total_diskon'] = $request->total_diskon;
-        $data['header']['pajak'] = $request->pajak;
-        $data['header']['dll'] = $request->dll;
-        $data['header']['total_harga'] = $request->total_harga;
-        $data['header']['bayar'] = $request->bayar;
-        $data['header']['kembali'] = $request->kembali;
-        // END HEADER DATA //
-
-        // ARRAY DATA FROM TABLE BARANG //
-        $data['detail']['kode_barang'] = $request->input('kode_barang.*'); // call array example -> $kode_barang[0]
-        $data['detail']['harga'] = $request->input('harga.*');
-        $data['detail']['qty'] = $request->input('qty.*');
-        $data['detail']['diskon'] = $request->input('diskon.*');
-        $data['detail']['sub_total'] = $request->input('sub_total.*');
-        // END ARRAY DATA FROM TABLE BARANG //
-
-        return $data;
-
-    }
 
 }

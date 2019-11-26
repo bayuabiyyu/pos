@@ -18,9 +18,13 @@ class CreateTablePenjualan extends Migration
             $table->string('user_id');
             $table->string('kode_pelanggan');
             $table->dateTime('tgl_transaksi');
-            $table->double('total_harga');
+            $table->double('total');
+            $table->double('pajak');
+            $table->double('pajak_rp');
             $table->double('total_diskon');
             $table->double('dll');
+            $table->double('grand_total');
+            $table->string('jenis_pembayaran');
             $table->double('bayar');
             $table->double('kembali');
             $table->timestamps();

@@ -29,23 +29,4 @@ class Barang extends Model
         return $this->hasOne('App\Model\Satuan', 'kode_satuan');
     }
 
-    public function getAllBarang(){
-        $data = $this->select('*')
-                ->from('barang AS a')
-                ->leftJoin('kategori AS b', 'a.kode_kategori', 'b.kode_kategori')
-                ->leftJoin('satuan AS c', 'a.kode_satuan', 'c.kode_satuan')
-                ->get();
-        return $data;
-    }
-
-    public function getBarangByKode($kode){
-        $data = $this->select('*')
-                ->from('barang AS a')
-                ->leftJoin('kategori AS b', 'a.kode_kategori', 'b.kode_kategori')
-                ->leftJoin('satuan AS c', 'a.kode_satuan', 'c.kode_satuan')
-                ->where('a.kode_barang', $kode)
-                ->first();
-        return $data;
-    }
-
 }

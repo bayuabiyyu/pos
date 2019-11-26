@@ -18,7 +18,7 @@ class Penjualan extends Model
      */
     protected $fillable = [
         'kode_transaksi', 'user_id', 'kode_pelanggan',
-        'tgl_transaksi', 'total_sub_total', 'pajak',' total_harga', 'total_diskon',
+        'tgl_transaksi', 'total', 'pajak', 'pajak_rp',' grand_total', 'total_diskon',
         'dll', 'bayar', 'kembali', 'keterangan', 'jenis_pembayaran',
     ];
 

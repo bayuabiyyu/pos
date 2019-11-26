@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class PenjualanRequest extends FormRequest
 {
@@ -30,15 +32,16 @@ class PenjualanRequest extends FormRequest
         $rules = [
             'kode_transaksi' => 'required|unique:penjualan,kode_transaksi',
             'user' => 'required',
-            'tanggal' => 'required|date_format:d-m-Y',
+            'tanggal' => 'required|date_format:d-m-Y h:i:s',
             'pelanggan' => 'required',
             'jenis_pembayaran' => 'required',
             'keterangan' => 'required',
             'total_sub_total' => 'required|numeric',
             'total_diskon' => 'required|numeric',
             'pajak' => 'required|numeric',
+            'pajak_rp' => 'required|numeric',
             'dll' => 'required|numeric',
-            'total_harga' => 'required|numeric',
+            'grand_total' => 'required|numeric',
             'bayar' => 'required|numeric',
             'kembali' => 'required|numeric',
             'kode_barang' => 'required',
@@ -82,6 +85,16 @@ class PenjualanRequest extends FormRequest
             'date_format' => ':attribute format tidak sesuai',
             'numeric' => ':attribute wajib angka/numerik'
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        $response = [
+            'success' => false,
+            'error-code' => 422,
+            'errors' => $validator->errors()->all(),
+        ];
+        throw new HttpResponseException(response()->json($response, 422));
     }
 
 }
