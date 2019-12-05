@@ -48,33 +48,6 @@
                     <div class="box-body">
 
                     <div class="form-group">
-                        <label for="" class="col-sm-3 control-label">Kode Transaksi </label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="kode_transaksi" name="kode_transaksi" placeholder="kode transaksi" value="{{ $data['kode_transaksi'] }}" readonly>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="" class="col-sm-3 control-label">User</label>
-                        <div class="col-sm-2">
-                            <input type="text" class="form-control" id="user" name="user" placeholder="User" value="{{ Auth::user()->id }}" readonly>
-                        </div>
-                        <div class="col-sm-4">
-                            <input type="text" class="form-control" id="nama_user" name="nama_user" placeholder="User" value="{{ Auth::user()->nama }}" readonly>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="" class="col-sm-3 control-label">Tanggal</label>
-                        <div class="col-sm-5">
-                            <input type="text" class="form-control" id="tanggal" name="tanggal" placeholder="Tanggal">
-                        </div>
-                        <div class="col-sm-4">
-                            <input type="text" class="form-control" id="waktu" name="waktu" placeholder="Waktu">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
                         <label for="" class="col-sm-3 control-label">Pelanggan</label>
                         <div class="col-sm-5">
                             <select class="form-control" name="pelanggan" id="pelanggan">
@@ -107,10 +80,7 @@
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer">
-                      {{-- <p>* Harap isi data transaksi dengan benar</p> --}}
-                      <div class="text-left">
-                        <button type="button" class="btn btn-primary"> <span class="fa fa-refresh"></span> TRANSAKSI BARU (F5)</button>
-                      </div>
+                      <p>* Harap isi data transaksi dengan benar</p>
                     </div>
                     <!-- /.box-footer -->
                 </div>
@@ -132,17 +102,10 @@
               <div class="box-body">
 
                 <div class="form-group">
-                  <label for="" class="col-sm-3 control-label">Total</label>
+                  <label for="" class="col-sm-3 control-label">Sub. Total</label>
                   <div class="col-sm-5">
-                    <input type="number" class="form-control" id="total" name="total" placeholder="Total" value="0" readonly>
+                    <input type="number" class="form-control" id="sub_total" name="sub_total" placeholder="Total" value="0" readonly>
                   </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="" class="col-sm-3 control-label">Total. Diskon</label>
-                    <div class="col-sm-5">
-                        <input type="number" class="form-control" id="total_diskon" name="total_diskon" placeholder="Total Diskon" value="0" readonly>
-                    </div>
                 </div>
 
                 <div class="form-group">
@@ -154,7 +117,6 @@
                     <div class="col-sm-4">
                         <input type="number" class="form-control" id="pajak_rp" name="pajak_rp" placeholder="PPN RP" value="0" readonly>
                     </div>
-
                 </div>
 
                 <div class="form-group">
@@ -165,7 +127,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="" class="col-sm-3 control-label">Total Harga</label>
+                    <label for="" class="col-sm-3 control-label">Grand Total</label>
                     <div class="col-sm-5">
                         <input type="number" class="form-control" id="grand_total" name="grand_total" placeholder="Total Harga" value="0" readonly>
                     </div>
@@ -190,8 +152,8 @@
               </div>
               <!-- /.box-body -->
               <div class="box-footer">
-                <button type="reset" class="btn btn-danger"><span class="fa fa-eraser"></span> RESET</button>
-                <button id="btn_bayar" type="submit" class="btn btn-primary pull-right"> <span class="fa fa-money"></span> BAYAR & CETAK INVOICE</button>
+                 <button id="btn_reset" type="button" class="btn btn-success pull-left"> <span class="fa fa-refresh"></span> Transaksi Baru (F5)</button>
+                 <button id="btn_bayar" type="submit" class="btn btn-primary pull-right"> <span class="fa fa-money"></span> Bayar & Cetak</button>
               </div>
               <!-- /.box-footer -->
                 </div>
@@ -213,22 +175,22 @@
 
                     <div class="row">
                         <div class="col-xs-2">
-                        <input type="text" id="kode_barang" name="kode_barang" class="form-control" placeholder="Kode Barang">
+                            <input type="text" id="kode_barang" name="kode_barang" class="form-control" placeholder="Kode Barang">
                         </div>
                         <div class="col-xs-3">
-                        <input type="text" id="nama_barang" name="nama_barang" class="form-control" placeholder="Nama Barang" readonly>
+                            <input type="text" id="nama_barang" name="nama_barang" class="form-control" placeholder="Nama Barang" readonly>
                         </div>
                         <div class="col-xs-2">
-                        <input type="number" id="harga" name="harga" class="form-control" placeholder="Harga">
+                            <input type="number" id="harga_barang" name="harga_barang" class="form-control" placeholder="Harga">
                         </div>
                         <div class="col-xs-1">
-                        <input type="number" id="qty" name="qty" class="form-control" placeholder="Qty">
+                            <input type="number" id="qty_barang" name="qty_barang" class="form-control" placeholder="Qty">
                         </div>
                         <div class="col-xs-2">
-                        <input type="number" id="diskon" name="diskon" class="form-control" placeholder="Diskon">
+                            <input type="number" id="sub_total_barang" name="sub_total_barang" class="form-control" placeholder="Sub. Total" readonly>
                         </div>
                         <div class="col-xs-2">
-                        <input type="number" id="sub_total" name="sub_total" class="form-control" placeholder="Sub. Total" readonly>
+                            <button id="btn_tambah" name="btn_tambah" type="button" class="btn btn-primary"> <span class="fa fa-plus"></span> Tambah </button>
                         </div>
                     </div>
 
@@ -244,10 +206,8 @@
                 <div class="box box-secondary">
                         <div class="box-header with-border">
                             <h3 class="box-title">
-                                <button id="btn_tambah" name="btn_tambah" type="button" class="btn btn-primary"> <span class="fa fa-plus"></span> TAMBAH </button>
-                                <button id="btn_data_barang" name="btn_data_barang" type="button" class="btn btn-secondary"> <span class="fa fa-file"></span> DATA BARANG </button>
+                                <button id="btn_data_barang" name="btn_data_barang" type="button" class="btn btn-secondary"> <span class="fa fa-file"></span> Data Barang </button>
                             </h3>
-                            <h3>Detail Item</h3>
                         </div>
                     <div class="box-body">
                             <div class="row">
@@ -259,7 +219,6 @@
                                             <th>Nama Barang</th>
                                             <th>Harga</th>
                                             <th>Qty</th>
-                                            <th>Diskon</th>
                                             <th>Sub. Total</th>
                                             <th>Action</th>
                                         </tr>
@@ -296,7 +255,7 @@
               <p>One fine body&hellip;</p>
             </div>
             <div class="modal-footer">
-              <p class="text-left">Catatan : Double Click Pada Baris Barang Yang Akan Dipilih</p>
+              <p class="text-left">Catatan : Double click pada barang yang akan dipilih</p>
             </div>
           </div>
           <!-- /.modal-content -->
@@ -361,8 +320,8 @@ $('#btn_data_barang').on('click', function(e){
                         // serverSide: true,
                         processing: true,
                         ajax: {
-                            url: "{!! route('api.barang.index') !!}",
-                            type: "GET"
+                            url: "{!! route('barang.getall') !!}",
+                            type: "POST"
                         },
                         columns: [
                             {data: 'kode_barang', name: 'kode_barang'},
@@ -408,7 +367,6 @@ $('#btn_data_barang').on('click', function(e){
         var kode_barang ,
             harga       ,
             qty         ,
-            diskon      ,
             sub_total   ;
 
             tabel.each(function(){
@@ -416,14 +374,12 @@ $('#btn_data_barang').on('click', function(e){
                 kode_barang = $(this).find('td:eq(0)').text(),
                 harga =  $(this).find('td:eq(2)').text(),
                 qty =  $(this).find('td:eq(3)').text(),
-                diskon =  $(this).find('td:eq(4)').text(),
-                sub_total   =  $(this).find('td:eq(5)').text();
+                sub_total   =  $(this).find('td:eq(4)').text();
 
                 data.push( {name: "kode_barang[]", value: kode_barang} );
                 data.push( {name: "harga[]", value: harga} );
                 data.push( {name: "qty[]", value: qty} );
-                data.push( {name: "diskon[]", value: diskon} );
-                data.push( {name: "sub_total[]", value: sub_total} );
+                data.push( {name: "sub_total_barang[]", value: sub_total} );
 
             });
 
@@ -436,17 +392,16 @@ $('#btn_data_barang').on('click', function(e){
                 $('#btn_bayar').prop('disabled', true);
             },
             success: function(res){
-                alert("success");
-                reset_invoice();
+                alert(res.message);
+                // reset_invoice();
             },
             error: function(xhr, status, error){
-                alert("error");
                 var msg = $('.alert #alert_msg').empty();
                 var error = xhr.responseJSON;
 
                 // Menampilkan pesan error dari json response error
                 $.each(error.errors, function(key, value){
-                    msg.append("<li>"+ value[0] +"</li>");
+                    msg.append("<li>"+ value +"</li>");
                 });
                 $('#alert').show();
             },
@@ -463,11 +418,17 @@ $('#btn_data_barang').on('click', function(e){
 });
 
 // RESET FORM (TRANSAKSI BARU) //
-
+    $('#btn_reset').on('click', function(e){
+        e.preventDefault();
+        reset_invoice();
+    });
     function reset_invoice(){
-        window.location.reload();
+        if(confirm("Apakah anda ingin transaksi baru?")){
+            $('#form_transaksi').trigger('reset');
+            $('#kode_barang, #nama_barang, #harga_barang, #qty_barang, #sub_total_barang').val(null);
+            $('#tabel_barang tbody').empty();
+        }
     }
-
 // END RESET FORM (TRANSAKSI BARU) //
 
 
@@ -486,57 +447,53 @@ $('#btn_data_barang').on('click', function(e){
     })
 
 
-    function hitung_total_sub_diskon(){
+    function hitung_sub_total(){
         // Loop From Table
-        var tabel = $('#tabel_barang > tbody > tr');
-        var total = 0,
-            total_diskon = 0;
+        var tabel = $('#tabel_barang > tbody > tr'),
+            total = 0;
 
         tabel.each(function(){
-            var sub_total = $(this).find('td:eq(5)').text();
-                diskon = $(this).find('td:eq(4)').text();
-
+            var sub_total = $(this).find('td:eq(4)').text();
             total += Number(sub_total);
-            total_diskon += Number(diskon);
-
         });
 
-        $('#total').val(total);
-        $('#total_diskon').val(total_diskon);
-
-        hitung_grand_total();
-
+        $('#sub_total').val(total);
     }
 
+    function hitung_pajak_rp(){
+        var total = $('#sub_total').val()
+            pajak = $('#pajak').val(),
+            pajak_rp = Number(total) * Number(pajak) / 100;
+        $('#pajak_rp').val(pajak_rp);
+    }
 
     function hitung_grand_total(){
-
-        var total = $('#total').val(),
-            total_diskon = $('#total_diskon').val(),
+        var total = $('#sub_total').val(),
             pajak = $('#pajak').val(),
             dll = $('#dll').val();
-
-        var grand_total = Number(total) - Number(total_diskon) + ( Number(total) * Number(pajak) / 100 ) + Number(dll);
+        var grand_total = Number(total) + ( Number(total) * Number(pajak) / 100 ) + Number(dll);
         $('#grand_total').val(grand_total);
-
     }
 
-    $('#total, #total_diskon, #pajak, #dll').on('keyup keypress blur change', function(e){
+    $('#pajak, #dll').on('keyup keypress blur change', function(e){
+        hitung_pajak_rp();
         hitung_grand_total();
     })
 
-    function hitung_sub_total(){
-        var qty = $('#qty').val(),
-            harga = $('#harga').val(),
-            diskon = $('#diskon').val();
+    function hitung_sub_total_barang(){
+        var qty = $('#qty_barang').val(),
+            harga = $('#harga_barang').val();
 
-        var sub_total = Number(qty) * Number(harga) - Number(diskon);
-        $('#sub_total').val(sub_total);
-
+        var sub_total = Number(qty) * Number(harga);
+        if(sub_total < 0){
+            $('#sub_total_barang').val('0');
+        }else{
+            $('#sub_total_barang').val(sub_total);
+        }
     }
 
-    $('#qty, #diskon').on('keyup keypress blur change', function(e){
-        hitung_sub_total();
+    $('#qty_barang').on('keyup keypress blur change', function(e){
+        hitung_sub_total_barang();
     })
 
 // END PROSES PERHITUNGAN BAYAR //
@@ -547,12 +504,11 @@ $('#btn_data_barang').on('click', function(e){
         e.preventDefault();
         var kode_barang = $('#kode_barang').val(),
             nama_barang = $('#nama_barang').val(),
-            harga = $('#harga').val(),
-            qty = $('#qty').val(),
-            diskon = $('#diskon').val(),
-            sub_total = $('#sub_total').val();
+            harga = $('#harga_barang').val(),
+            qty = $('#qty_barang').val(),
+            sub_total = $('#sub_total_barang').val();
 
-        if(kode_barang !== "" && nama_barang !== "" && harga !== "" && qty !== "" && diskon !== "" && sub_total !== ""){
+        if(kode_barang !== "" && nama_barang !== "" && harga !== "" && qty !== "" && sub_total !== ""){
 
           $('#tabel_barang')
             .append("<tr>" +
@@ -560,21 +516,18 @@ $('#btn_data_barang').on('click', function(e){
                 "<td>" + nama_barang + "</td>" +
                 "<td>" + harga + "</td>" +
                 "<td>" + qty + "</td>" +
-                "<td>" + diskon + "</td>" +
                 "<td>" + sub_total + "</td>" +
                 "<td> <button type='button' class='btn btn-danger' id='btn_hapus' name='btn_hapus'> Hapus </button> <button type='button' class='btn btn-info' id='btn_ubah' name='btn_ubah'> Ubah </button> </td>"+
                 "</tr>");
 
-            $('#kode_barang').val("");
-            $('#nama_barang').val("");
-            $('#harga').val("");
-            $('#qty').val("");
-            $('#diskon').val("");
-            $('#sub_total').val("");
-
+            $('#kode_barang').val(null);
+            $('#nama_barang').val(null);
+            $('#harga_barang').val(null);
+            $('#qty_barang').val(null);
+            $('#sub_total_barang').val(null);
             // Fill to Pembayaran
-            hitung_total_sub_diskon();
-
+            hitung_sub_total();
+            hitung_grand_total();
         }
 
     });
@@ -583,77 +536,51 @@ $('#btn_data_barang').on('click', function(e){
 // HAPUS BARANG DARI TABEL //
     $('.table tbody').on('click', '#btn_hapus', function(){
         $(this).closest('tr').remove();
-        hitung_total_sub_diskon();
+        hitung_sub_total();
     });
+// HAPUS BARANG DARI TABEL //
 
+// UBAH BARANG DARI TABEL //
     $('.table tbody').on('click', '#btn_ubah', function(){
         var kode_barang = $(this).closest('tr').find('td:eq(0)').text(),
             nama_barang = $(this).closest('tr').find('td:eq(1)').text(),
             harga = $(this).closest('tr').find('td:eq(2)').text(),
             qty = $(this).closest('tr').find('td:eq(3)').text(),
-            diskon = $(this).closest('tr').find('td:eq(4)').text(),
-            sub_total = $(this).closest('tr').find('td:eq(5)').text();
+            sub_total = $(this).closest('tr').find('td:eq(4)').text();
 
         $('#kode_barang').val(kode_barang);
         $('#nama_barang').val(nama_barang);
-        $('#harga').val(harga);
-        $('#qty').val(qty);
-        $('#diskon').val(diskon);
-        $('#sub_total').val(sub_total);
+        $('#harga_barang').val(harga);
+        $('#qty_barang').val(qty);
+        $('#sub_total_barang').val(sub_total);
 
         $(this).closest('tr').remove();
-        hitung_total_sub_diskon();
+        hitung_sub_total();
 
     });
-// HAPUS BARANG DARI TABEL //
+// UBAH BARANG DARI TABEL //
 
-// DATA BARANG TABEL TO FIELD QTY DLL //
+// GET BARANG VALUE FROM TABLE //
     $('.modal').on('dblclick', '#data tr', function(e){
         e.preventDefault();
-        var row = $(this).closest("tr");
-        var kode = row.find("td:eq(0)").text();
+        var row = $(this).closest("tr"),
+            kode = row.find("td:eq(0)").text(),
+            nama = row.find("td:eq(1)").text(),
+            stok = row.find("td:eq(2)").text(),
+            harga = row.find("td:eq(6)").text();
 
-        var me          = $(this),
-            url         = "{!! route('api.barang.index') !!}" + "/" + kode,
-            method      = "GET",
-            dataType    = "JSON",
-            data        = {kode: kode};
-
-        $.ajax({
-                url: url,
-                type: method,
-                data: data,
-                dataType: dataType,
-                beforeSend: function(res){
-
-                },
-                success: function(res){
-
-                    $('#kode_barang').val(res.data.kode_barang);
-                    $('#nama_barang').val(res.data.nama_barang);
-                    $('#harga').val(res.data.harga_jual);
-                    $('#diskon').val(0);
-                    $('#qty').focus();
-
-                },
-                error: function(xhr, err){
-
-                    var msg = $('.alert #alert_msg').empty();
-                    var error = xhr.responseJSON;
-
-                    // Menampilkan pesan error dari json response error
-                    $.each(error.errors, function(key, value){
-                        msg.append("<p>"+ value[0] +"</p>");
-                    });
-                    $('#alert').show();
-                }
-
-            })
-
-        $('#modal').modal('hide');
+        if(stok <= 0 ){
+            alert("Stok barang 0, harap perbarui data stok");
+        }else{
+            $('#kode_barang').val(kode);
+            $('#nama_barang').val(nama);
+            $('#harga_barang').val(harga);
+            $('#qty_barang').focus();
+            $('#modal').modal('hide');
+        }
 
     });
-// END DATA BARANG TABEL TO FIELD QTY DLL //
+// END GET BARANG VALUE FROM TABLE //
 
     </script>
 

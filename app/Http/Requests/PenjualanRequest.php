@@ -30,14 +30,10 @@ class PenjualanRequest extends FormRequest
 
     public function createRules(){
         $rules = [
-            'kode_transaksi' => 'required|unique:penjualan,kode_transaksi',
-            'user' => 'required',
-            'tanggal' => 'required|date_format:d-m-Y h:i:s',
             'pelanggan' => 'required',
             'jenis_pembayaran' => 'required',
             'keterangan' => 'required',
-            'total_sub_total' => 'required|numeric',
-            'total_diskon' => 'required|numeric',
+            'sub_total' => 'required|numeric',
             'pajak' => 'required|numeric',
             'pajak_rp' => 'required|numeric',
             'dll' => 'required|numeric',
@@ -47,8 +43,7 @@ class PenjualanRequest extends FormRequest
             'kode_barang' => 'required',
             'harga' => 'required',
             'qty' => 'required',
-            'diskon' => 'required',
-            'sub_total' => 'required'
+            'sub_total_barang' => 'required',
         ];
 
         return $rules;
@@ -58,15 +53,12 @@ class PenjualanRequest extends FormRequest
     public function attributes()
     {
         return [
-            'kode_transaksi' => 'Kode Transaksi',
-            'user' => 'User',
-            'tanggal' => 'Tanggal',
             'pelanggan' => 'Pelanggan',
             'jenis_pembayaran' => 'Jenis Pembayaran',
             'keterangan' => 'Keterangan',
-            'total_sub_total' => 'Total Sub. Total',
-            'total_diskon' => 'Total Diskon',
+            'sub_total' => 'Sub. Total',
             'pajak' => 'Pajak/PPN',
+            'pajak_rp' => 'Pajak/PPN Rp.',
             'dll' => 'DLL',
             'total_harga' => 'Total Harga',
             'bayar' => 'Bayar',
@@ -74,15 +66,13 @@ class PenjualanRequest extends FormRequest
             'kode_barang' => 'Kode Barang',
             'harga' => 'Harga',
             'qty' => 'Qty',
-            'diskon' => 'Diskon',
-            'sub_total' => 'Sub. Total'
+            'sub_total_barang' => 'Sub. Total Barang',
         ];
     }
 
     public function messages(){
         return [
             'required' => ':attribute wajib diisi',
-            'date_format' => ':attribute format tidak sesuai',
             'numeric' => ':attribute wajib angka/numerik'
         ];
     }

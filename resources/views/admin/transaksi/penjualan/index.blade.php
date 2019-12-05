@@ -1,4 +1,3 @@
-
 @extends('admin.layout.app')
 
 @section('title')
@@ -37,9 +36,27 @@
                 <div class="box">
                     <div class="box-header">
                     <h3 class="box-title"> <button id="btn_refresh" class="btn bg-blue btn-flat"> <i class="fa fa-refresh"></i> Refresh Data </button> </h3>
-                    </div>
+
+                    <!-- Date range -->
+                    <div class="row">
+                            <div class="col-md-5 pull-right">
+                                <label>Mulai s/d Sampai</label>
+
+                                <div class="input-group">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input type="text" class="form-control pull-right" id="range_tanggal">
+                                </div>
+                                <!-- /.input group -->
+                            </div>
+                        </div>
+                        <!-- /.End date range -->
+
+                </div>
                     <!-- /.box-header -->
                     <div class="box-body">
+
                         <div class="table-responsive">
                             <table id="data" class="table table-bordered table-striped table-hover">
                                 <thead>
@@ -49,7 +66,7 @@
                                     <th>Tgl Transaksi</th>
                                     <th>Karyawan</th>
                                     <th>Pelanggan</th>
-                                    <th>Total Harga</th>
+                                    <th>Grand Total</th>
                                     <th>Action</th>
                                 </tr>
                                 </thead>
@@ -114,12 +131,30 @@ $.ajaxSetup({
     }
 });
 
+
+    // DATE RANGE PICKER
+    $('#range_tanggal').daterangepicker({
+    locale: {
+        format: 'DD/MM/YYYY'
+    }
+    }).on('apply.daterangepicker', function (e, picker) {
+        $('#data').DataTable().ajax.reload();
+    })
+    // END DATE RANGE PICKER
+
+
     var table = $('#data').DataTable({
         processing: true,
         serverSide: true,
+        order: [],
         ajax: {
             url: "{{ route('penjualan.datatables') }}",
-            type: "POST"
+            type: "POST",
+            data: function(d) {
+                // NEW PARAMETER IF RELOAD / KHUSUS DATATABLE
+                d.mulai = $('#range_tanggal').data('daterangepicker').startDate.format('DD-MM-YYYY');
+                d.sampai = $('#range_tanggal').data('daterangepicker').endDate.format('DD-MM-YYYY');
+            },
         },
         columns: [
             {data: 'DT_RowIndex', name: 'DT_RowIndex'},
@@ -127,7 +162,7 @@ $.ajaxSetup({
             {data: 'tgl_transaksi', name: 'tgl_transaksi'},
             {data: 'nama', name: 'nama'},
             {data: 'nama_pelanggan', name: 'nama_pelanggan'},
-            {data: 'total_harga', name: 'total_harga'},
+            {data: 'grand_total', name: 'grand_total'},
             {data: 'action', name: 'action', orderable: false, searchable: false},
         ]
     });

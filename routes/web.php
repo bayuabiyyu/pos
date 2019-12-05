@@ -60,6 +60,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::group(['prefix' => 'transaksi'], function () {
         // PENJUALAN
         Route::get('penjualan/report/invoice/{id}', 'Admin\PenjualanController@reportInvoice')->where('id', '.*')->name('penjualan.report_invoice');
+        Route::get('penjualan/report/nota/{id}', 'Admin\PenjualanController@notaPenjualan')->where('id', '.*')->name('penjualan.nota_penjualan');
         Route::resource('penjualan', 'Admin\PenjualanController');
         Route::get('penjualan/{id}', 'Admin\PenjualanController@show')->where('id', '.*'); // Overwrite from resource, untuk allow tanda slash di variabel paramter
         Route::post('penjualan/data_barang', 'Admin\PenjualanController@dataBarang')->name('penjualan.data_barang');

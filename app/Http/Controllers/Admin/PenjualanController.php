@@ -3,32 +3,21 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\DB;
-use DataTables;
 use PDF;
 use App\Http\Requests\PenjualanRequest;
+use App\Http\Services\PenjualanService;
 use App\Model\Pelanggan;
-use App\Model\Barang;
-use App\Model\Penjualan;
-use App\Model\DetailPenjualan;
 
 class PenjualanController extends Controller
 {
 
-    protected $pelanggan, $penjualan, $detail_penjualan, $barang;
+    protected $pelanggan, $penjualanService;
 
-    public function __construct(
-        Pelanggan $pelanggan,
-        Penjualan $penjualan,
-        DetailPenjualan $detail_penjualan,
-        Barang $barang)
+    public function __construct( Pelanggan $pelanggan, PenjualanService $penjualanService )
     {
         $this->pelanggan = $pelanggan;
-        $this->penjualan = $penjualan;
-        $this->detail_penjualan = $detail_penjualan;
-        $this->barang = $barang;
+        $this->penjualanService = $penjualanService;
     }
 
     /**
@@ -48,9 +37,7 @@ class PenjualanController extends Controller
      */
     public function create()
     {
-
         $data['pelanggan'] = $this->pelanggan->all();
-        $data['kode_transaksi'] = $this->getKodeInvoice();
         return view('admin.transaksi.penjualan.form', compact('data'));
     }
 
@@ -62,41 +49,15 @@ class PenjualanController extends Controller
      */
     public function store(PenjualanRequest $request)
     {
-
-        $data = $this->fillDataStore($request);
-
-        // INSERT DATA TRANSAKSI //
-        DB::beginTransaction();
-        try{
-            // INSERT HEADER //
-            $insertHeader = $this->penjualan->insert($data['header']);
-            // END INSERT HEADER //
-
-            // INSERT DETAIL //
-            foreach ($data['detail']['kode_barang'] as $key => $value) {
-                $insertDetail = $this->detail_penjualan->insert([
-                    'kode_transaksi'    => $data['header']['kode_transaksi'],
-                    'kode_barang'       => $data['detail']['kode_barang'][$key],
-                    'harga'             => $data['detail']['harga'][$key],
-                    'qty'               => $data['detail']['qty'][$key],
-                    'diskon'            => $data['detail']['diskon'][$key],
-                    'sub_total'         => $data['detail']['sub_total'][$key],
-                ]);
-                $updateStok = $this->barang->where('kode_barang', '=', $data['detail']['kode_barang'][$key])
-                                ->decrement('stok', $data['detail']['qty'][$key]);
-            }
-            // END INSERT DETAIL //
-            DB::commit();
-            $response['status'] = true;
-            $response['msg'] = "Data transaksi berhasil disimpan";
-
-        } catch (\Exception $e){
-            DB::rollback();
-            $response['status'] = false;
-            $response['msg'] = $e->getMessage();
+        try {
+            $this->penjualanService->save($request);
+            $response['success'] = true;
+            $response['message'] = "Data berhasil ditambahkan";
+        } catch (\Exception $e) {
+            $response['success'] = false;
+            $response['message'] = $e->getMessage();
         }
-        // END INSERT DATA TRANSAKSI //
-
+        // $response = $this->penjualanService->fillDataStore($request);
         return response()->json($response);
     }
 
@@ -108,8 +69,8 @@ class PenjualanController extends Controller
      */
     public function show($id)
     {
-        $data['header'] = $this->penjualan->getPenjualanByID($id);
-        $data['detail'] = $this->detail_penjualan->getDetailPenjualanByID($id);
+        $data['header'] = $this->penjualanService->getPenjualanByID($id);
+        $data['detail'] = $this->penjualanService->getDetailPenjualanByID($id);
         return view('admin.transaksi.penjualan.show', compact('data'));
     }
 
@@ -151,17 +112,9 @@ class PenjualanController extends Controller
      * Datatable
      *  @return Format YajraDatatables
      */
-    public function dataTable(){
-        $data = $this->penjualan->getAllPenjualan();
-
-        return DataTables::of($data)
-                ->addIndexColumn()
-                ->addColumn('action', function($data){
-                    return '<a id="btn_show" title="Lihat Data" href="'.route('penjualan.show', $data->kode_transaksi).'"> <i class="fa fa-search"></i> </a> |
-                    <a id="btn_delete" title="Hapus Data" href="'. route('penjualan.destroy', $data->kode_transaksi).'"> <i class="fa fa-trash"></i> </a>';
-                })
-                ->rawColumns(['action'])
-                ->make(true);
+    public function dataTable(Request $request){
+        $dataTable = $this->penjualanService->dataTable($request);
+        return $dataTable;
     }
 
     /**
@@ -171,8 +124,8 @@ class PenjualanController extends Controller
      *
      */
     public function reportInvoice($id){
-        $data['header'] = $this->penjualan->getPenjualanByID($id);
-        $data['detail'] = $this->detail_penjualan->getDetailPenjualanByID($id);
+        $data['header'] = $this->penjualanService->getPenjualanByID($id);
+        $data['detail'] = $this->penjualanService->getDetailPenjualanByID($id);
 
         // $a = view('admin.transaksi.penjualan.report.invoice', compact('data'));
 
@@ -180,14 +133,25 @@ class PenjualanController extends Controller
         return $pdf->stream('invoice_penjualan.pdf');
     }
 
+    /**
+     * Nota penjualan
+     *
+     * @param id_transaksi
+     * @return view
+     */
+    public function notaPenjualan($id){
+        $data['header'] = $this->penjualanService->getByID($id);
+        $data['detail'] = $this->penjualanService->getDetailByID($id);
+        // dd($data);
+
+        $pdf = PDF::loadView('admin.transaksi.penjualan.report.nota', compact('data'))
+                            ->setPaper('a4', 'portrait');
+        $pdf->getDomPDF()->set_option("enable_php", true);
+        return $pdf->stream('nota_penjualan.pdf');
+    }
+
     public function dataBarang(){
         return view('admin.transaksi.penjualan.data_barang');
     }
-
-    public function getKodeInvoice(){
-
-
-    }
-
 
 }

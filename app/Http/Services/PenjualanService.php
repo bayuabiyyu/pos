@@ -3,21 +3,28 @@
 namespace App\Http\Services;
 
 use Illuminate\Support\Carbon;
+use Illuminate\Http\Request;
 use App\Model\Penjualan;
+use App\Model\DetailPenjualan;
+use App\Model\Barang;
 use DataTables;
+use Auth;
+use DB;
 
-class penjualanService
+class PenjualanService
 {
-    private $penjualan;
+    private $penjualan, $detailPenjualan, $barang;
 
     /**
      * Construct init class
      *
      * @param Model Class dll
      */
-    public function __construct(Penjualan $penjualan)
+    public function __construct(Penjualan $penjualan, DetailPenjualan $detailPenjualan, Barang $barang)
     {
         $this->penjualan = $penjualan;
+        $this->detailPenjualan = $detailPenjualan;
+        $this->barang = $barang;
     }
 
     /**
@@ -27,7 +34,12 @@ class penjualanService
      */
     public function getAll()
     {
-        $data = $this->penjualan->select('*')->get();
+        $data = $this->penjualan->select('*')
+                ->from('penjualan')
+                ->leftJoin('pelanggan', 'penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+                ->leftJoin('users', 'penjualan.user_id', '=', 'users.id')
+                ->get();
+
         return $data;
     }
 
@@ -44,6 +56,21 @@ class penjualanService
         return $data;
     }
 
+
+    // DETAIL
+    public function getDetailByID($id){
+        $data = $this->detailPenjualan->select('barang.nama_barang','detail_penjualan.*')
+                ->from('detail_penjualan')
+                ->join('penjualan', 'detail_penjualan.kode_transaksi', '=', 'penjualan.kode_transaksi')
+                ->join('barang', 'detail_penjualan.kode_barang', '=', 'barang.kode_barang')
+                ->where('detail_penjualan.kode_transaksi', '=', $id)
+                ->get();
+
+        return $data;
+    }
+
+    // END DETAIL
+
     /**
      * Action save.
      *
@@ -51,12 +78,37 @@ class penjualanService
      * @return Boolean
      */
     public function save($request){
-        $data = [
-            'kode_transaksi' => $request->kode_transaksi,
-            'nama_penjualan' => $request->nama_penjualan,
-        ];
-        $create = $this->penjualan->create($data);
-        return $create;
+        $data = $this->fillDataStore($request);
+
+        // INSERT DATA TRANSAKSI //
+        DB::beginTransaction();
+        try{
+            // INSERT HEADER //
+            $this->penjualan->insert($data['header']);
+            // END INSERT HEADER //
+
+            // INSERT DETAIL //
+            foreach ($data['detail']['kode_barang'] as $key => $value) {
+                $this->detailPenjualan->insert([
+                    'kode_transaksi'    => $data['header']['kode_transaksi'],
+                    'kode_barang'       => $data['detail']['kode_barang'][$key],
+                    'harga'             => $data['detail']['harga'][$key],
+                    'qty'               => $data['detail']['qty'][$key],
+                    'sub_total'         => $data['detail']['sub_total'][$key],
+                    'created_at'        => Carbon::now(),
+                    'updated_at'        => Carbon::now(),
+                ]);
+                $this->barang->where('kode_barang', '=', $data['detail']['kode_barang'][$key])
+                                ->decrement('stok', $data['detail']['qty'][$key]);
+            }
+            // END INSERT DETAIL //
+            DB::commit();
+           return true;
+        } catch (\Exception $e){
+            DB::rollback();
+            throw new \Exception($e->getMessage());
+        }
+        // END INSERT DATA TRANSAKSI //
     }
 
      /**
@@ -92,27 +144,30 @@ class penjualanService
      */
     public function fillDataStore($request){
         // HEADER DATA //
-        $data['header']['kode_transaksi'] = $request->kode_transaksi;
-        $data['header']['user_id'] = $request->user;
-        $data['header']['tgl_transaksi'] = Carbon::parse($request->tanggal)->format('Y-m-d H:i:s');
+        $data['header']['kode_transaksi'] = $this->getKodeInvoice();
+        $data['header']['user_id'] = Auth::guard()->user()->id;
+        $data['header']['tgl_transaksi'] = Carbon::now();
         $data['header']['kode_pelanggan'] = $request->pelanggan;
         $data['header']['jenis_pembayaran'] = $request->jenis_pembayaran;
         $data['header']['keterangan'] = $request->keterangan;
-        $data['header']['total_sub_total'] = $request->total_sub_total;
-        $data['header']['total_diskon'] = $request->total_diskon;
+        $data['header']['sub_total'] = $request->sub_total;
         $data['header']['pajak'] = $request->pajak;
+        $data['header']['pajak_rp'] = $request->pajak_rp;
         $data['header']['dll'] = $request->dll;
         $data['header']['grand_total'] = $request->grand_total;
         $data['header']['bayar'] = $request->bayar;
         $data['header']['kembali'] = $request->kembali;
+        $data['header']['created_at'] = Carbon::now();
+        $data['header']['updated_at'] = Carbon::now();
         // END HEADER DATA //
 
         // ARRAY DATA FROM TABLE BARANG //
         $data['detail']['kode_barang'] = $request->input('kode_barang.*'); // call array example -> $kode_barang[0]
         $data['detail']['harga'] = $request->input('harga.*');
         $data['detail']['qty'] = $request->input('qty.*');
-        $data['detail']['diskon'] = $request->input('diskon.*');
-        $data['detail']['sub_total'] = $request->input('sub_total.*');
+        $data['detail']['sub_total'] = $request->input('sub_total_barang.*');
+        $data['detail']['created_at'] = Carbon::now();
+        $data['detail']['updated_at'] = Carbon::now();
         // END ARRAY DATA FROM TABLE BARANG //
 
         return $data;
@@ -151,14 +206,24 @@ class penjualanService
      *
      * @return DatatablesYajra
      */
-    public function dataTable(){
-        $data = $this->getAll();
+    public function dataTable(Request $request){
+        $mulai = Carbon::parse($request->mulai)->format('Y-m-d');
+        $sampai = Carbon::parse($request->sampai)->format('Y-m-d');
+        $data = $this->penjualan->select('*')
+                ->from('penjualan')
+                ->leftJoin('pelanggan', 'penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+                ->leftJoin('users', 'penjualan.user_id', '=', 'users.id')
+                ->whereBetween( DB::raw('DATE(penjualan.tgl_transaksi)' ), [$mulai, $sampai])
+                ->orderBy('penjualan.tgl_transaksi', 'ASC')
+                ->get();
         $dataTable = DataTables::of($data)
                     ->addIndexColumn()
                     ->addColumn('action', function($data){
                         return '<a id="btn_show" title="Lihat Data" href="'.route('penjualan.show', $data->kode_transaksi).'"> <i class="fa fa-search"></i> </a> |
-                        <a id="btn_edit" title="Ubah Data" href="'.route('penjualan.edit', $data->kode_transaksi).'"> <i class="fa fa-edit"></i> </a> |
-                        <a id="btn_delete" title="Hapus Data" href="'. route('penjualan.destroy', $data->kode_transaksi).'"> <i class="fa fa-trash"></i> </a>';
+                                <a target="_blank" id="btn_print" title="Print Data" href="'. route('penjualan.nota_penjualan', $data->kode_transaksi).'"> <i class="fa fa-print"></i> </a>';
+                    })
+                    ->editColumn('tgl_transaksi', function($data){
+                        return Carbon::parse($data->tgl_transaksi)->format('d-M-Y | H:i:s');
                     })
                     ->make(true);
 

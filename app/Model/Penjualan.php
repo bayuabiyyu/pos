@@ -18,7 +18,7 @@ class Penjualan extends Model
      */
     protected $fillable = [
         'kode_transaksi', 'user_id', 'kode_pelanggan',
-        'tgl_transaksi', 'total', 'pajak', 'pajak_rp',' grand_total', 'total_diskon',
+        'tgl_transaksi', 'sub_total', 'pajak', 'pajak_rp',' grand_total',
         'dll', 'bayar', 'kembali', 'keterangan', 'jenis_pembayaran',
     ];
 
@@ -28,42 +28,6 @@ class Penjualan extends Model
 
     public function user(){
         return $this->hasOne('App\Model\User', 'id');
-    }
-
-    /**
-     * Fungsi Penjualan
-     *
-     * return json array
-     */
-
-    public function getAllPenjualan(){
-
-        $user_id = Auth::user()->id;
-
-        $data = $this->select('*')
-                ->from('penjualan')
-                ->leftJoin('pelanggan', 'penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
-                ->leftJoin('users', 'penjualan.user_id', '=', 'users.id')
-                ->get();
-
-        // $data = $this->with('pelanggan', 'user')->get();
-
-        return $data;
-    }
-
-    public function getPenjualanByID($id){
-
-        $user_id = Auth::user()->id;
-
-        $data = $this->select('*')
-                ->from('penjualan')
-                ->leftJoin('pelanggan', 'penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
-                ->leftJoin('users', 'penjualan.user_id', '=', 'users.id')
-                ->where('penjualan.kode_transaksi', '=', $id)
-                ->first();
-
-        return $data;
-
     }
 
 }
